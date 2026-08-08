@@ -13,7 +13,7 @@ interface ArenaCardProps {
   onSettledSuccess?: (txHash: string, winningBid: number, savingsReturned: number) => void;
 }
 
-const ARENA_ADDRESS = (process.env.NEXT_PUBLIC_ARENA_ADDRESS || '') as `0x${string}`;
+const ARENA_ADDRESS = (process.env.NEXT_PUBLIC_ARENA_ADDRESS || '0xA8567209aaCD9a52491772DDF001fAf8890a20b5') as `0x${string}`;
 const USDC_ADDRESS = (process.env.NEXT_PUBLIC_USDC_ADDRESS || '0x534b2f3A21130d7a60830c2Df862319e593943A3') as `0x${string}`;
 const MONAD_RPC = process.env.NEXT_PUBLIC_MONAD_RPC_URL || 'https://testnet-rpc.monad.xyz';
 

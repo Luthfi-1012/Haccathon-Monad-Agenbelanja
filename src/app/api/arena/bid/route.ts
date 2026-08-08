@@ -4,7 +4,7 @@ import { privateKeyToAccount } from 'viem/accounts';
 import { NEGOSIASI_ARENA_ABI } from '@/lib/abi';
 
 const MONAD_TESTNET_RPC = process.env.NEXT_PUBLIC_MONAD_RPC_URL || 'https://testnet-rpc.monad.xyz';
-const ARENA_ADDRESS = (process.env.ARENA_ADDRESS || process.env.NEXT_PUBLIC_ARENA_ADDRESS) as `0x${string}`;
+const ARENA_ADDRESS = (process.env.ARENA_ADDRESS || process.env.NEXT_PUBLIC_ARENA_ADDRESS || '0xA8567209aaCD9a52491772DDF001fAf8890a20b5') as `0x${string}`;
 
 const monadTestnetChain = {
   id: 10143,
