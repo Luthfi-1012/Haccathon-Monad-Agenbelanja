@@ -92,6 +92,17 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 
     try {
       const ethereum = (window as any).ethereum;
+      
+      // Force permission popup window from MetaMask
+      try {
+        await ethereum.request({
+          method: 'wallet_requestPermissions',
+          params: [{ eth_accounts: {} }],
+        });
+      } catch (permError) {
+        // Fallback to eth_requestAccounts if requestPermissions fails or user cancels
+      }
+
       const accounts: string[] = await ethereum.request({ method: 'eth_requestAccounts' });
       if (accounts && accounts.length > 0) {
         setAddress(accounts[0]);
