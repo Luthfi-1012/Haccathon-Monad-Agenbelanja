@@ -31,7 +31,7 @@ export async function processX402Payment(
 
     if (!confirmRes.ok) {
       const errData = await confirmRes.json().catch(() => ({}));
-      throw new Error(errData.error || 'Otorisasi pembayaran x402 gagal diproses.');
+      throw new Error(errData.error || 'Failed to process x402 payment authorization.');
     }
 
     return await confirmRes.json();
@@ -39,7 +39,7 @@ export async function processX402Payment(
 
   if (!initialRes.ok) {
     const errData = await initialRes.json().catch(() => ({}));
-    throw new Error(errData.error || 'Terjadi kendala dalam memproses settlement.');
+    throw new Error(errData.error || 'Failed to process settlement.');
   }
 
   return await initialRes.json();

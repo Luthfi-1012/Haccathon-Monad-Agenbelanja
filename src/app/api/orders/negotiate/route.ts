@@ -10,14 +10,14 @@ export async function POST(request: Request) {
 
     if (!itemDescription || typeof itemDescription !== 'string') {
       return NextResponse.json(
-        { error: 'itemDescription wajib diisi' },
+        { error: 'itemDescription is required' },
         { status: 400 }
       );
     }
 
     if (!budgetAmount || typeof budgetAmount !== 'number' || budgetAmount <= 0) {
       return NextResponse.json(
-        { error: 'budgetAmount harus berupa angka positif' },
+        { error: 'budgetAmount must be a positive number' },
         { status: 400 }
       );
     }
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     return NextResponse.json(order);
   } catch (error: any) {
     return NextResponse.json(
-      { error: error?.message || 'Terjadi kesalahan saat negosiasi' },
+      { error: error?.message || 'An error occurred during negotiation' },
       { status: 500 }
     );
   }

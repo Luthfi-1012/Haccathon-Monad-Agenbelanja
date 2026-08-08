@@ -11,12 +11,12 @@ export async function POST(
 
     // Objective 1 & Constraint: Payment strictly forbidden if status is not NEGOTIATION_COMPLETE or PAYMENT_REQUIRED
     if (!order) {
-      return NextResponse.json({ error: 'Order tidak ditemukan' }, { status: 404 });
+      return NextResponse.json({ error: 'Order not found' }, { status: 404 });
     }
 
     if (order.status !== 'NEGOTIATION_COMPLETE' && order.status !== 'PAYMENT_REQUIRED') {
       return NextResponse.json(
-        { error: 'Pembayaran ditolak: Order belum mencapai kesepakatan vendor' },
+        { error: 'Payment rejected: Order has not reached vendor agreement' },
         { status: 400 }
       );
     }
@@ -33,7 +33,7 @@ export async function POST(
       const seq = order.timeline.length + 1;
       const updatedOrder = updateOrder(orderId, {
         status: 'SETTLEMENT_FAILED',
-        errorMessage: 'Settlement gagal: Otorisasi pembayaran ditolak oleh facilitator.',
+        errorMessage: 'Settlement failed: Payment authorization rejected by facilitator.',
         timeline: [
           ...order.timeline,
           {
@@ -42,7 +42,7 @@ export async function POST(
             timestamp: new Date().toISOString(),
             actor: 'system' as const,
             eventType: 'SETTLEMENT_FAILED' as const,
-            message: 'Settlement x402 gagal: Otorisasi pembayaran tidak valid.',
+            message: 'x402 settlement failed: Invalid payment authorization.',
           },
         ],
       });
@@ -85,8 +85,8 @@ export async function POST(
         actor: 'system' as const,
         eventType: 'SETTLEMENT_SUCCESS' as const,
         message: isDemoMode && !body?.realTxHash
-          ? `Settlement x402 diverifikasi! (Demo Payment Mode Active)`
-          : `Settlement x402 berhasil diselesaikan pada Monad Testnet! Ref TX: ${txRef}`,
+          ? `x402 settlement verified! (Demo Payment Mode Active)`
+          : `x402 settlement completed on Monad Testnet! Ref TX: ${txRef}`,
         amount: order.finalPrice,
       },
     ];
@@ -100,7 +100,7 @@ export async function POST(
     return NextResponse.json(updatedOrder);
   } catch (error: any) {
     return NextResponse.json(
-      { error: 'Gagal memproses settlement x402. Silakan coba lagi.' },
+      { error: 'Failed to process x402 settlement. Please try again.' },
       { status: 500 }
     );
   }

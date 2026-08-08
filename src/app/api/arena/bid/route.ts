@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createWalletClient, createPublicClient, http, parseAbi } from 'viem';
+import { createWalletClient, createPublicClient, http } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { NEGOSIASI_ARENA_ABI } from '@/lib/abi';
 
@@ -119,7 +119,7 @@ export async function POST(request: Request) {
     });
   } catch (error: any) {
     return NextResponse.json(
-      { error: error?.message || 'Gagal memproses bidding agen on-chain' },
+      { error: error?.message || 'Failed to process on-chain agent bidding' },
       { status: 500 }
     );
   }

@@ -57,7 +57,7 @@ export async function runNegotiationOrchestrator(
   addEvent(
     'system',
     'QUOTE_REQUEST',
-    `Mulai pencarian quote paralel untuk "${itemDescription}" dengan batas anggaran ${budgetAmount} USDC`
+    `Starting parallel quote search for "${itemDescription}" with budget cap of ${budgetAmount} USDC`
   );
 
   const vendorStates: Record<VendorId, VendorStatus & { initialPrice: number; currentOffer?: number }> = {
@@ -71,7 +71,7 @@ export async function runNegotiationOrchestrator(
     addEvent(
       vendor.vendorId,
       'QUOTE_REQUEST',
-      `Mengirim permintaan quote ke ${vendor.vendorName}`
+      `Sending quote request to ${vendor.vendorName}`
     );
     return requestVendorQuote(vendor, itemDescription);
   });
@@ -83,7 +83,7 @@ export async function runNegotiationOrchestrator(
     addEvent(
       res.vendorId,
       'QUOTE_RECEIVED',
-      `${v.vendorName} memberikan harga awal ${res.initialPrice} USDC`,
+      `${v.vendorName} quoted initial price of ${res.initialPrice} USDC`,
       res.initialPrice
     );
     (vendorStates as any)[res.vendorId] = 'QUOTED';
@@ -108,7 +108,7 @@ export async function runNegotiationOrchestrator(
     addEvent(
       'agent',
       'VENDOR_SELECTED',
-      `AgenBelanja memilih ${winningVendor.vendorName} dengan harga awal ${winningOffer.initialPrice} USDC (sesuai anggaran). Penghematan: ${savings} USDC.`,
+      `AgenBelanja selected ${winningVendor.vendorName} at initial quote of ${winningOffer.initialPrice} USDC (within budget). Savings: ${savings} USDC.`,
       winningOffer.initialPrice
     );
 
@@ -136,7 +136,7 @@ export async function runNegotiationOrchestrator(
   addEvent(
     'agent',
     'COUNTER_OFFER',
-    `Seluruh harga awal melebihi anggaran (${budgetAmount} USDC). AgenBelanja mengirimkan counter-offer ${counterOfferAmount} USDC ke semua vendor secara paralel.`,
+    `All initial quotes exceed budget (${budgetAmount} USDC). AgenBelanja sending parallel counter-offer of ${counterOfferAmount} USDC to all vendors.`,
     counterOfferAmount
   );
 
@@ -155,7 +155,7 @@ export async function runNegotiationOrchestrator(
       addEvent(
         res.vendorId,
         'VENDOR_RESPONSE',
-        `${v.vendorName} MENERIMA counter-offer ${res.finalPrice} USDC`,
+        `${v.vendorName} ACCEPTED counter-offer of ${res.finalPrice} USDC`,
         res.finalPrice
       );
       (vendorStates as any)[res.vendorId] = 'ACCEPTED';
@@ -164,7 +164,7 @@ export async function runNegotiationOrchestrator(
       addEvent(
         res.vendorId,
         'VENDOR_RESPONSE',
-        `${v.vendorName} MENOLAK counter-offer ${counterOfferAmount} USDC`
+        `${v.vendorName} REJECTED counter-offer of ${counterOfferAmount} USDC`
       );
       (vendorStates as any)[res.vendorId] = 'REJECTED';
     }
@@ -186,7 +186,7 @@ export async function runNegotiationOrchestrator(
     addEvent(
       'agent',
       'VENDOR_SELECTED',
-      `Negosiasi sukses! AgenBelanja memilih ${winningVendor.vendorName} dengan harga kesepakatan ${winning.finalPrice} USDC.`,
+      `Negotiation successful! AgenBelanja selected ${winningVendor.vendorName} at agreed price of ${winning.finalPrice} USDC.`,
       winning.finalPrice
     );
 
@@ -211,7 +211,7 @@ export async function runNegotiationOrchestrator(
   addEvent(
     'system',
     'NO_DEAL',
-    `Seluruh vendor menolak penawaran ${counterOfferAmount} USDC. Tidak ada kesepakatan yang tercapai (NO_DEAL).`
+    `All vendors rejected counter-offer of ${counterOfferAmount} USDC. No deal reached (NO_DEAL).`
   );
 
   return {

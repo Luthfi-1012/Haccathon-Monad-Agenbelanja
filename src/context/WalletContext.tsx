@@ -86,7 +86,7 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 
   const connectWallet = async () => {
     if (!checkEthereum()) {
-      alert('MetaMask atau Web3 Wallet tidak ditemukan. Silakan pasang ekstensi MetaMask.');
+      alert('MetaMask or Web3 Wallet not found. Please install the MetaMask browser extension.');
       return;
     }
 
