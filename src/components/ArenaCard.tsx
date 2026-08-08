@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Award, CheckCircle2, ShieldAlert, ExternalLink, Zap, Clock, Lock, RefreshCw, AlertCircle } from 'lucide-react';
+import { CheckCircle2, ShieldAlert, ExternalLink, Zap, Clock, Lock, RefreshCw, AlertCircle } from 'lucide-react';
 import { Order } from '../types/negotiation';
 import { useWallet } from '@/context/WalletContext';
 import { createWalletClient, createPublicClient, custom, http, keccak256, toHex, parseEventLogs } from 'viem';
@@ -56,6 +56,7 @@ export const ArenaCard: React.FC<ArenaCardProps> = ({ order, onResetDemo, onSett
   const isNoDeal = order.status === 'NO_DEAL';
   const budgetUnits = BigInt(Math.round(order.budgetAmount * 1e6));
 
+  // ── ALL ON-CHAIN LOGIC PRESERVED EXACTLY ──
   const handleCreateArenaAuction = async () => {
     if (!isConnected) {
       await connectWallet();
@@ -67,7 +68,7 @@ export const ArenaCard: React.FC<ArenaCardProps> = ({ order, onResetDemo, onSett
     }
 
     if (!ARENA_ADDRESS) {
-      setErrorMsg('Alamat smart contract ARENA_ADDRESS belum di-deploy di .env');
+      setErrorMsg('ARENA_ADDRESS not deployed — check .env');
       return;
     }
 
@@ -97,7 +98,7 @@ export const ArenaCard: React.FC<ArenaCardProps> = ({ order, onResetDemo, onSett
         });
 
         if (usdcBalance < budgetUnits) {
-          setErrorMsg(`Saldo USDC Testnet Anda (${Number(usdcBalance) / 1e6} USDC) tidak mencukupi untuk escrow ${order.budgetAmount} USDC. Silakan gunakan faucet Monad USDC.`);
+          setErrorMsg(`Insufficient USDC balance (${Number(usdcBalance) / 1e6} USDC) for ${order.budgetAmount} USDC escrow. Use a Monad USDC faucet.`);
           setStatus('IDLE');
           return;
         }
@@ -123,7 +124,7 @@ export const ArenaCard: React.FC<ArenaCardProps> = ({ order, onResetDemo, onSett
         });
         const approveReceipt = await publicClient.waitForTransactionReceipt({ hash: approveHash });
         if (approveReceipt.status === 'reverted') {
-          throw new Error('Transaksi Approve USDC di-revert oleh blockchain.');
+          throw new Error('USDC Approve transaction was reverted.');
         }
       }
 
@@ -143,7 +144,7 @@ export const ArenaCard: React.FC<ArenaCardProps> = ({ order, onResetDemo, onSett
       const receipt = await publicClient.waitForTransactionReceipt({ hash: createHash });
 
       if (receipt.status === 'reverted') {
-        throw new Error('Transaksi createAuction di-revert oleh smart contract Monad. Pastikan saldo USDC Testnet mencukupi.');
+        throw new Error('createAuction was reverted by Monad. Ensure sufficient USDC Testnet balance.');
       }
 
       // Retrieve new auction ID safely directly from event logs
@@ -204,9 +205,9 @@ export const ArenaCard: React.FC<ArenaCardProps> = ({ order, onResetDemo, onSett
     } catch (err: any) {
       console.error('Error creating auction:', err);
       if (err?.message?.includes('User denied') || err?.code === 4001) {
-        setErrorMsg('Transaksi dibatalkan oleh pengguna di MetaMask.');
+        setErrorMsg('Transaction cancelled by user in MetaMask.');
       } else {
-        setErrorMsg(err?.message || 'Gagal membuka lelang Arena On-Chain.');
+        setErrorMsg(err?.message || 'Failed to create Arena On-Chain auction.');
       }
       setStatus('IDLE');
     }
@@ -214,7 +215,7 @@ export const ArenaCard: React.FC<ArenaCardProps> = ({ order, onResetDemo, onSett
 
   const handleSettleAuction = async () => {
     if (auctionId === null || auctionId < 0) {
-      setErrorMsg('Auction ID tidak valid.');
+      setErrorMsg('Invalid Auction ID.');
       return;
     }
     try {
@@ -245,95 +246,145 @@ export const ArenaCard: React.FC<ArenaCardProps> = ({ order, onResetDemo, onSett
       const receipt = await publicClient.waitForTransactionReceipt({ hash });
 
       if (receipt.status === 'reverted') {
-        throw new Error('Settlement di-revert oleh smart contract (Waktu lelang mungkin masih berjalan / BiddingStillOpen).');
+        throw new Error('Settlement was reverted (bidding may still be open / BiddingStillOpen).');
       }
 
       setStatus('SETTLED');
     } catch (err: any) {
       console.error('Error settling auction:', err);
       if (err?.message?.includes('User denied') || err?.code === 4001) {
-        setErrorMsg('Transaksi settlement dibatalkan oleh pengguna di MetaMask.');
+        setErrorMsg('Settlement cancelled by user in MetaMask.');
       } else {
-        setErrorMsg(err?.message || 'Gagal mengeksekusi settlement on-chain.');
+        setErrorMsg(err?.message || 'Failed to execute on-chain settlement.');
       }
       setStatus('READY_SETTLE');
     }
   };
 
+  // ── VISUAL REDESIGN ──
+  const getStatusChip = () => {
+    switch (status) {
+      case 'IDLE': return { label: 'Ready', color: 'var(--text-muted)' };
+      case 'APPROVING': return { label: 'Approving USDC…', color: 'var(--warning)' };
+      case 'CREATING': return { label: 'Creating Auction…', color: 'var(--warning)' };
+      case 'WAITING_BIDS': return { label: `Bidding Open · ${timeLeft}s`, color: 'var(--primary)' };
+      case 'READY_SETTLE': return { label: 'Ready to Settle', color: 'var(--success)' };
+      case 'SETTLING': return { label: 'Settling…', color: 'var(--warning)' };
+      case 'SETTLED': return { label: 'Settled ✓', color: 'var(--success)' };
+      case 'FAILED': return { label: 'Failed', color: 'var(--danger)' };
+    }
+  };
+
+  const chipInfo = getStatusChip();
+
   return (
-    <div className="glass-card mb-6" style={{ padding: '1.25rem', border: '1px solid var(--primary-accent)' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.85rem' }}>
-        <h3 style={{ fontSize: '0.95rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text-primary)' }}>
-          <Lock size={16} color="var(--primary-accent)" /> Mode Arena On-Chain ⚡
+    <div className="glass-card" style={{
+      padding: 'var(--space-lg)',
+      borderColor: status === 'SETTLED' ? 'rgba(16,185,129,0.3)' : 'rgba(131,110,249,0.2)',
+    }}>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--space-md)' }}>
+        <h3 style={{ fontSize: '0.92rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+          <Lock size={15} color="var(--primary)" /> Arena On-Chain
         </h3>
-        <span className="badge badge-quoted" style={{ fontSize: '0.68rem' }}>
-          Monad Escrow Protocol
-        </span>
+        <div className="chip" style={{
+          background: status === 'SETTLED' ? 'var(--success-subtle)' : status === 'IDLE' ? undefined : 'var(--primary-subtle)',
+          color: chipInfo.color,
+          borderColor: status === 'SETTLED' ? 'rgba(16,185,129,0.2)' : status === 'IDLE' ? undefined : 'rgba(131,110,249,0.2)',
+        }}>
+          {(status === 'APPROVING' || status === 'CREATING' || status === 'SETTLING') && (
+            <RefreshCw size={10} style={{ animation: 'spin 1s linear infinite' }} />
+          )}
+          {status === 'WAITING_BIDS' && (
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--primary)', animation: 'pulse-dot 1.5s infinite' }} />
+          )}
+          {chipInfo.label}
+        </div>
       </div>
 
       {isNoDeal ? (
-        <div style={{ padding: '1rem', background: 'var(--danger-red-subtle)', borderRadius: '0.375rem', color: '#fca5a5' }}>
-          <p style={{ fontWeight: 700, fontSize: '0.85rem', marginBottom: '0.3rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <ShieldAlert size={16} /> Arena Tidak Dibuka (No Deal)
+        <div style={{
+          padding: 'var(--space-md)', background: 'var(--danger-subtle)',
+          borderRadius: 'var(--radius-md)', border: '1px solid rgba(239,68,68,0.15)',
+        }}>
+          <p style={{ fontWeight: 700, fontSize: '0.85rem', color: '#fca5a5', display: 'flex', alignItems: 'center', gap: '0.35rem', marginBottom: '0.2rem' }}>
+            <ShieldAlert size={15} /> Arena Not Opened (No Deal)
           </p>
           <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-            Seluruh vendor menolak penawaran. Arena lelang tidak dapat dibuka untuk mencegah pemborosan gas fee.
+            All vendors rejected the offer. Arena auction cannot be opened.
           </p>
         </div>
       ) : (
         <div>
-          {/* Auction Summary */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.65rem', marginBottom: '1rem' }}>
-            <div style={{ padding: '0.65rem', background: '#090a0f', borderRadius: '0.375rem', border: '1px solid var(--border-subtle)' }}>
-              <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Target Vendor:</span>
-              <p style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)' }}>{order.selectedVendorName}</p>
+          {/* Summary Grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '0.5rem', marginBottom: 'var(--space-md)' }}>
+            <div style={{ padding: '0.6rem', background: 'var(--bg-recessed)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+              <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>Target Vendor</span>
+              <p style={{ fontSize: '0.88rem', fontWeight: 700 }}>{order.selectedVendorName}</p>
             </div>
-            <div style={{ padding: '0.65rem', background: '#090a0f', borderRadius: '0.375rem', border: '1px solid var(--border-subtle)' }}>
-              <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Budget Escrow Cap:</span>
-              <p className="mono" style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--primary-accent)' }}>{order.budgetAmount} USDC</p>
+            <div style={{ padding: '0.6rem', background: 'var(--bg-recessed)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+              <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>Escrow Cap</span>
+              <p className="mono" style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--primary)' }}>{order.budgetAmount} USDC</p>
             </div>
           </div>
 
-          {/* Error Banner */}
+          {/* Error */}
           {errorMsg && (
-            <div style={{ padding: '0.65rem', background: 'var(--danger-red-subtle)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '0.375rem', color: '#fca5a5', fontSize: '0.8rem', marginBottom: '0.85rem' }}>
-              <AlertCircle size={14} style={{ display: 'inline', marginRight: '0.3rem' }} /> {errorMsg}
+            <div style={{
+              padding: '0.55rem 0.75rem', background: 'var(--danger-subtle)',
+              border: '1px solid rgba(239,68,68,0.2)', borderRadius: 'var(--radius-sm)',
+              color: '#fca5a5', fontSize: '0.78rem', marginBottom: 'var(--space-md)',
+              display: 'flex', alignItems: 'flex-start', gap: '0.35rem',
+            }}>
+              <AlertCircle size={14} style={{ flexShrink: 0, marginTop: '0.1rem' }} />
+              <span>{errorMsg}</span>
             </div>
           )}
 
-          {/* Status Controls */}
+          {/* ── IDLE: Create Auction ── */}
           {status === 'IDLE' && (
             <button
               className="btn btn-primary"
               onClick={handleCreateArenaAuction}
-              style={{ width: '100%', padding: '0.85rem', fontSize: '0.9rem' }}
+              style={{ width: '100%', padding: '0.8rem', fontSize: '0.88rem', borderRadius: 'var(--radius-md)' }}
             >
-              <Lock size={16} /> Bayar via Arena On-Chain 🔒 ({order.budgetAmount} USDC Escrow)
+              <Lock size={15} /> Open Arena Escrow ({order.budgetAmount} USDC)
             </button>
           )}
 
+          {/* ── APPROVING / CREATING ── */}
           {(status === 'APPROVING' || status === 'CREATING') && (
-            <div style={{ padding: '0.85rem', background: '#090a0f', borderRadius: '0.375rem', textAlign: 'center' }}>
-              <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--primary-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}>
-                <RefreshCw size={15} style={{ animation: 'spin 1s linear infinite' }} />
-                {status === 'APPROVING' ? 'Setujui Allowance USDC di Wallet...' : 'Membuka Lelang Arena On-Chain di Monad...'}
+            <div style={{
+              padding: '0.8rem', background: 'var(--bg-recessed)',
+              borderRadius: 'var(--radius-md)', textAlign: 'center',
+            }}>
+              <p style={{
+                fontSize: '0.85rem', fontWeight: 600, color: 'var(--primary)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem',
+              }}>
+                <RefreshCw size={14} style={{ animation: 'spin 1s linear infinite' }} />
+                {status === 'APPROVING' ? 'Approve USDC allowance in wallet…' : 'Creating Arena auction on Monad…'}
               </p>
             </div>
           )}
 
+          {/* ── WAITING / READY / SETTLING ── */}
           {(status === 'WAITING_BIDS' || status === 'READY_SETTLE' || status === 'SETTLING') && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <div style={{ padding: '0.85rem', background: '#090a0f', borderRadius: '0.375rem', border: '1px solid var(--border-subtle)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
-                  <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                    <Clock size={14} color="var(--primary-accent)" /> Arena Lelang Aktif (ID #{auctionId ?? 0})
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+              <div style={{
+                padding: '0.75rem', background: 'var(--bg-recessed)',
+                borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.3rem' }}>
+                  <span style={{ fontSize: '0.8rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                    <Clock size={13} color="var(--primary)" /> Auction #{auctionId ?? 0}
                   </span>
-                  <span className="mono" style={{ fontSize: '0.75rem', color: 'var(--primary-accent)' }}>
-                    Waktu Sisa: {timeLeft}s
+                  <span className="mono" style={{ fontSize: '0.72rem', color: 'var(--primary)' }}>
+                    {timeLeft}s remaining
                   </span>
                 </div>
                 <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                  Budget {order.budgetAmount} USDC berhasil dikunci di smart contract. Vendor mengonfirmasi penawaran di-chain...
+                  {order.budgetAmount} USDC locked in escrow. Vendors confirming bids on-chain…
                 </p>
 
                 {createTxHash && (
@@ -341,20 +392,29 @@ export const ArenaCard: React.FC<ArenaCardProps> = ({ order, onResetDemo, onSett
                     href={`https://testnet.monadexplorer.com/tx/${createTxHash}`}
                     target="_blank"
                     rel="noreferrer"
-                    style={{ fontSize: '0.72rem', color: 'var(--primary-accent)', display: 'inline-flex', alignItems: 'center', gap: '0.2rem', marginTop: '0.4rem', textDecoration: 'underline' }}
+                    style={{
+                      fontSize: '0.7rem', color: 'var(--primary)',
+                      display: 'inline-flex', alignItems: 'center', gap: '0.2rem',
+                      marginTop: '0.35rem', textDecoration: 'underline',
+                    }}
                   >
-                    View Create Tx on Monad Explorer <ExternalLink size={11} />
+                    View create tx <ExternalLink size={10} />
                   </a>
                 )}
               </div>
 
+              {/* Bids Received */}
               {bidsReceived.length > 0 && (
-                <div style={{ padding: '0.65rem', background: '#090a0f', borderRadius: '0.375rem', border: '1px solid var(--border-subtle)', fontSize: '0.75rem' }}>
-                  <span style={{ fontWeight: 600, color: 'var(--text-secondary)' }}>Bids On-Chain Diterima:</span>
+                <div style={{
+                  padding: '0.6rem', background: 'var(--bg-recessed)',
+                  borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)',
+                  fontSize: '0.75rem',
+                }}>
+                  <span style={{ fontWeight: 600, color: 'var(--text-secondary)' }}>Bids received on-chain:</span>
                   {bidsReceived.map((b, idx) => (
-                    <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.25rem' }}>
+                    <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.2rem' }}>
                       <span>{b.vendorName}:</span>
-                      <span className="mono" style={{ color: 'var(--success-green)' }}>{b.priceUsdc} USDC</span>
+                      <span className="mono" style={{ color: 'var(--success)' }}>{b.priceUsdc} USDC</span>
                     </div>
                   ))}
                 </div>
@@ -364,29 +424,43 @@ export const ArenaCard: React.FC<ArenaCardProps> = ({ order, onResetDemo, onSett
                 className="btn btn-accent"
                 onClick={handleSettleAuction}
                 disabled={status === 'SETTLING'}
-                style={{ width: '100%', padding: '0.75rem', fontSize: '0.85rem' }}
+                style={{ width: '100%', padding: '0.75rem', fontSize: '0.85rem', borderRadius: 'var(--radius-md)' }}
               >
-                <Zap size={16} /> {status === 'SETTLING' ? 'Memproses Settlement On-Chain...' : 'Settle Arena Sekarang (Bayar Vendor & Auto Refund Kembalian)'}
+                <Zap size={15} />
+                {status === 'SETTLING'
+                  ? 'Processing on-chain settlement…'
+                  : 'Settle Now (Pay Vendor & Auto-Refund Change)'}
               </button>
             </div>
           )}
 
+          {/* ── SETTLED ── */}
           {status === 'SETTLED' && (
-            <div style={{ padding: '0.85rem', background: 'var(--success-green-subtle)', border: '1px solid rgba(16, 185, 129, 0.25)', borderRadius: '0.375rem' }}>
-              <p style={{ fontWeight: 700, color: '#6ee7b7', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.35rem', marginBottom: '0.3rem' }}>
-                <CheckCircle2 size={16} /> Settlement Arena On-Chain Selesai!
+            <div style={{
+              padding: '0.8rem', background: 'var(--success-subtle)',
+              border: '1px solid rgba(16,185,129,0.2)', borderRadius: 'var(--radius-md)',
+            }}>
+              <p style={{
+                fontWeight: 700, color: '#6ee7b7', fontSize: '0.85rem',
+                display: 'flex', alignItems: 'center', gap: '0.3rem', marginBottom: '0.25rem',
+              }}>
+                <CheckCircle2 size={15} /> Arena Settlement Complete
               </p>
               <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                Vendor pemenang telah dibayar dan sisa hemat dikembalikan otomatis ke dompet Anda.
+                Winning vendor paid. Remaining savings auto-refunded to your wallet.
               </p>
               {settleTxHash && (
                 <a
                   href={`https://testnet.monadexplorer.com/tx/${settleTxHash}`}
                   target="_blank"
                   rel="noreferrer"
-                  style={{ fontSize: '0.72rem', color: 'var(--success-green)', display: 'inline-flex', alignItems: 'center', gap: '0.25rem', marginTop: '0.5rem', textDecoration: 'underline' }}
+                  style={{
+                    fontSize: '0.7rem', color: 'var(--success)',
+                    display: 'inline-flex', alignItems: 'center', gap: '0.2rem',
+                    marginTop: '0.35rem', textDecoration: 'underline',
+                  }}
                 >
-                  View Settle Tx on Monad Explorer <ExternalLink size={11} />
+                  View settle tx <ExternalLink size={10} />
                 </a>
               )}
             </div>

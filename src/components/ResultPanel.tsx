@@ -41,125 +41,134 @@ export const ResultPanel: React.FC<ResultPanelProps> = ({
   const isSettled = order.status === 'SETTLEMENT_SUCCESS';
   const isPaymentFailed = order.status === 'SETTLEMENT_FAILED';
   const walletAddress = address
-    ? `${address.substring(0, 6)}...${address.substring(address.length - 4)}`
-    : '0x71C...4e8B';
+    ? `${address.substring(0, 6)}…${address.substring(address.length - 4)}`
+    : '0x71C…4e8B';
   const isDemoPayment = order.transactionReference === 'DEMO_MODE_VERIFIED';
 
   return (
     <div
       ref={cardRef}
-      className="glass-card mb-6"
+      className="glass-card"
       style={{
         borderColor: isSettled
-          ? 'var(--success-green)'
+          ? 'rgba(16,185,129,0.3)'
           : isNoDeal || isPaymentFailed
-          ? 'var(--danger-red)'
-          : 'var(--border-strong)',
-        padding: '1.25rem',
+          ? 'rgba(239,68,68,0.2)'
+          : 'var(--border-default)',
+        padding: 'var(--space-lg)',
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.85rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-        <h3 style={{ fontSize: '0.95rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text-primary)' }}>
-          <Award size={16} color={isNoDeal || isPaymentFailed ? 'var(--danger-red)' : 'var(--success-green)'} /> Outcome & Settlement
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--space-md)', flexWrap: 'wrap', gap: '0.5rem' }}>
+        <h3 style={{ fontSize: '0.92rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+          <Award size={15} color={isNoDeal || isPaymentFailed ? 'var(--danger)' : 'var(--success)'} />
+          Outcome & Settlement
         </h3>
-
-        {/* Status Badge */}
         <div>
           {isSettled ? (
-            <span className="badge badge-accepted"><CheckCircle2 size={12} /> SETTLED VIA X402</span>
+            <span className="badge badge-accepted"><CheckCircle2 size={10} /> Settled via x402</span>
           ) : isComplete ? (
-            <span className="badge badge-quoted"><CheckCircle2 size={12} /> DEAL AGREED</span>
+            <span className="badge badge-quoted"><CheckCircle2 size={10} /> Deal Agreed</span>
           ) : isPaymentFailed ? (
-            <span className="badge badge-rejected"><AlertCircle size={12} /> SETTLEMENT FAILED</span>
+            <span className="badge badge-rejected"><AlertCircle size={10} /> Settlement Failed</span>
           ) : (
-            <span className="badge badge-rejected"><ShieldAlert size={12} /> NO DEAL</span>
+            <span className="badge badge-rejected"><ShieldAlert size={10} /> No Deal</span>
           )}
         </div>
       </div>
 
       {isNoDeal ? (
-        <div style={{ padding: '1rem', background: 'var(--danger-red-subtle)', border: '1px solid rgba(239, 68, 68, 0.25)', borderRadius: '0.375rem', color: '#fca5a5' }}>
-          <p style={{ fontWeight: 700, fontSize: '0.9rem', marginBottom: '0.3rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <AlertCircle size={16} /> No offers match target budget.
+        <div style={{
+          padding: 'var(--space-md)', background: 'var(--danger-subtle)',
+          border: '1px solid rgba(239,68,68,0.2)', borderRadius: 'var(--radius-md)',
+        }}>
+          <p style={{ fontWeight: 700, fontSize: '0.88rem', marginBottom: '0.3rem', color: '#fca5a5', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+            <AlertCircle size={15} /> No vendor matched your budget.
           </p>
-          <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
-            All vendors rejected counter-offer of {order.budgetAmount} USDC. Payment disabled to protect budget.
+          <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: 'var(--space-md)' }}>
+            All vendors rejected the counter-offer of {order.budgetAmount} USDC. No money was spent.
           </p>
-
           <button
             className="btn btn-secondary"
             onClick={onResetDemo}
-            style={{ width: '100%', padding: '0.6rem', fontSize: '0.8rem' }}
+            style={{ width: '100%', padding: '0.6rem', fontSize: '0.82rem' }}
           >
-            <RefreshCw size={14} /> Try Another Budget / Reset
+            <RefreshCw size={13} /> Try Another Scenario
           </button>
         </div>
       ) : (
         <div>
-          {/* Summary Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.65rem', marginBottom: '1rem' }}>
-            <div style={{ padding: '0.7rem', background: '#090a0f', borderRadius: '0.375rem', border: '1px solid var(--border-subtle)' }}>
-              <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Selected Vendor:</span>
-              <p style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)' }}>{order.selectedVendorName}</p>
+          {/* Summary */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.5rem', marginBottom: 'var(--space-md)' }}>
+            <div style={{ padding: '0.65rem', background: 'var(--bg-recessed)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+              <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>Selected Vendor</span>
+              <p style={{ fontSize: '0.92rem', fontWeight: 700 }}>{order.selectedVendorName}</p>
             </div>
-
-            <div style={{ padding: '0.7rem', background: '#090a0f', borderRadius: '0.375rem', border: '1px solid var(--border-subtle)' }}>
-              <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Final Agreed Price:</span>
-              <p className="mono" style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--success-green)' }}>
-                {order.initialPrice} USDC <ArrowRight size={12} style={{ display: 'inline', margin: '0 0.2rem' }} /> {order.finalPrice} USDC
+            <div style={{ padding: '0.65rem', background: 'var(--bg-recessed)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+              <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>Agreed Price</span>
+              <p className="mono" style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--success)' }}>
+                {order.initialPrice} <ArrowRight size={11} style={{ display: 'inline', verticalAlign: '-1px', margin: '0 0.15rem' }} /> {order.finalPrice} USDC
               </p>
             </div>
           </div>
 
           {/* Error Alert */}
           {isPaymentFailed && (
-            <div style={{ padding: '0.7rem 0.85rem', background: 'var(--danger-red-subtle)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '0.375rem', color: '#fca5a5', fontSize: '0.8rem', marginBottom: '0.85rem' }}>
+            <div style={{
+              padding: '0.6rem 0.8rem', background: 'var(--danger-subtle)',
+              border: '1px solid rgba(239,68,68,0.2)', borderRadius: 'var(--radius-sm)',
+              color: '#fca5a5', fontSize: '0.8rem', marginBottom: 'var(--space-md)',
+            }}>
               <p style={{ fontWeight: 600 }}>⚠️ {order.errorMessage || 'Settlement failed.'}</p>
             </div>
           )}
 
-          {/* Payment Action */}
+          {/* Payment */}
           {!isSettled ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <button
                 className="btn btn-accent"
                 onClick={() => onPayWithX402(order.orderId, false)}
                 disabled={isPaying}
-                style={{ width: '100%', padding: '0.85rem', fontSize: '0.95rem' }}
+                style={{ width: '100%', padding: '0.8rem', fontSize: '0.92rem', borderRadius: 'var(--radius-md)' }}
               >
-                <Zap size={18} /> {isPaying ? 'Processing x402 Settlement...' : `Pay ${order.finalPrice} USDC with x402`}
+                <Zap size={16} /> {isPaying ? 'Processing x402 Settlement…' : `Pay ${order.finalPrice} USDC with x402`}
               </button>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
-                <span className="badge badge-quoted" style={{ fontSize: '0.68rem' }}>
-                  Demo Payment Mode Active
-                </span>
+                <span className="badge badge-quoted" style={{ fontSize: '0.65rem' }}>Demo Payment Mode</span>
                 <button
                   type="button"
-                  style={{ background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '0.72rem', cursor: 'pointer', textDecoration: 'underline' }}
+                  style={{
+                    background: 'none', border: 'none', color: 'var(--text-muted)',
+                    fontSize: '0.7rem', cursor: 'pointer', textDecoration: 'underline',
+                  }}
                   onClick={() => onPayWithX402(order.orderId, true)}
                 >
-                  Simulate Settlement Failure
+                  Simulate Failure
                 </button>
               </div>
             </div>
           ) : (
-            <div style={{ padding: '0.85rem', background: 'var(--success-green-subtle)', border: '1px solid rgba(16, 185, 129, 0.25)', borderRadius: '0.375rem' }}>
+            <div style={{
+              padding: '0.8rem', background: 'var(--success-subtle)',
+              border: '1px solid rgba(16,185,129,0.2)', borderRadius: 'var(--radius-md)',
+            }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
                 <div>
-                  <p style={{ fontWeight: 700, color: '#6ee7b7', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                    <CheckCircle2 size={15} /> Settlement Complete via x402
+                  <p style={{ fontWeight: 700, color: '#6ee7b7', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                    <CheckCircle2 size={14} /> Settlement Complete
                   </p>
-                  <p className="mono" style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: '0.15rem' }}>
-                    {isDemoPayment ? 'Demo Payment Mode Verified' : `TX Ref: ${order.transactionReference}`}
+                  <p className="mono" style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '0.1rem' }}>
+                    {isDemoPayment ? 'Demo Mode Verified' : `TX: ${order.transactionReference}`}
                   </p>
                 </div>
                 <button
                   className="btn btn-secondary"
                   onClick={() => setShowReceiptModal(true)}
-                  style={{ padding: '0.35rem 0.65rem', fontSize: '0.75rem' }}
+                  style={{ padding: '0.3rem 0.6rem', fontSize: '0.72rem' }}
                 >
-                  <ExternalLink size={12} /> Receipt
+                  <ExternalLink size={11} /> Receipt
                 </button>
               </div>
             </div>
@@ -169,51 +178,39 @@ export const ResultPanel: React.FC<ResultPanelProps> = ({
 
       {/* Receipt Modal */}
       {showReceiptModal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: '1rem' }}>
-          <div className="glass-card" style={{ maxWidth: '440px', width: '100%', padding: '1.5rem' }}>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <CheckCircle2 size={18} color="var(--success-green)" /> x402 Settlement Receipt
+        <div style={{
+          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)',
+          backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center',
+          justifyContent: 'center', zIndex: 200, padding: 'var(--space-md)',
+        }}>
+          <div className="glass-card" style={{ maxWidth: 420, width: '100%', padding: 'var(--space-lg)' }}>
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 800, marginBottom: 'var(--space-md)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <CheckCircle2 size={17} color="var(--success)" /> x402 Receipt
             </h3>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.825rem', marginBottom: '1.25rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Order ID:</span>
-                <span className="mono">{order.orderId}</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Item:</span>
-                <span>{order.itemDescription}</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Selected Vendor:</span>
-                <span>{order.selectedVendorName}</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Final Price:</span>
-                <span className="mono" style={{ color: 'var(--success-green)', fontWeight: 700 }}>{order.finalPrice} USDC</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Payer Wallet:</span>
-                <span className="mono">{walletAddress}</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Network:</span>
-                <span>Monad Testnet (10143)</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Mode:</span>
-                <span className="badge badge-quoted" style={{ fontSize: '0.68rem' }}>
-                  {isDemoPayment ? 'Demo Payment Mode' : 'On-Chain Settlement'}
-                </span>
-              </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.82rem', marginBottom: 'var(--space-lg)' }}>
+              {[
+                { label: 'Order ID', value: order.orderId },
+                { label: 'Item', value: order.itemDescription },
+                { label: 'Vendor', value: order.selectedVendorName },
+                { label: 'Final Price', value: `${order.finalPrice} USDC`, mono: true, color: 'var(--success)' },
+                { label: 'Payer', value: walletAddress, mono: true },
+                { label: 'Network', value: 'Monad Testnet (10143)' },
+                { label: 'Mode', value: isDemoPayment ? 'Demo' : 'On-Chain' },
+              ].map(({ label, value, mono, color }) => (
+                <div key={label} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>{label}</span>
+                  <span className={mono ? 'mono' : ''} style={{ fontWeight: color ? 700 : undefined, color }}>{value}</span>
+                </div>
+              ))}
             </div>
 
             <button
               className="btn btn-primary"
               onClick={() => setShowReceiptModal(false)}
-              style={{ width: '100%', padding: '0.65rem' }}
+              style={{ width: '100%', padding: '0.6rem' }}
             >
-              Close Receipt
+              Close
             </button>
           </div>
         </div>

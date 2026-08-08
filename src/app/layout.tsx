@@ -3,8 +3,8 @@ import './globals.css';
 import { WalletProvider } from '@/context/WalletContext';
 
 export const metadata = {
-  title: 'AgenBelanja — Agen Negosiasi Pembelian x402 Monad',
-  description: 'Parallel Agentic Commerce Negotiation Platform on Monad',
+  title: 'AgenBelanja — Autonomous Purchasing Agent on Monad',
+  description: 'Parallel agentic commerce: automated negotiation, budget-safe purchasing, and transparent settlement on Monad blockchain.',
 };
 
 export default function RootLayout({
@@ -13,7 +13,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id">
+    <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
       <body>
         <WalletProvider>{children}</WalletProvider>
       </body>

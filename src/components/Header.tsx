@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ShoppingBag, Wallet, CheckCircle2, RefreshCw, AlertTriangle, LogOut, Zap, ShieldCheck } from 'lucide-react';
+import { Zap, Wallet, CheckCircle2, AlertTriangle, LogOut, ShieldCheck } from 'lucide-react';
 import { useWallet } from '@/context/WalletContext';
 
 interface HeaderProps {
@@ -12,169 +12,120 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ onResetDemo, arenaMode, onToggleArenaMode }) => {
   const { address, isConnected, isWrongNetwork, connectWallet, disconnectWallet, switchNetwork } = useWallet();
-  const [showDisconnectConfirm, setShowDisconnectConfirm] = useState(false);
+  const [showDisconnect, setShowDisconnect] = useState(false);
 
-  const shortenedAddress = address ? `${address.substring(0, 6)}...${address.substring(address.length - 4)}` : '';
+  const short = address ? `${address.substring(0, 6)}…${address.substring(address.length - 4)}` : '';
 
   const handleWalletClick = () => {
-    if (isWrongNetwork) {
-      switchNetwork();
-    } else if (!isConnected) {
-      connectWallet();
-    } else {
-      setShowDisconnectConfirm((prev) => !prev);
-    }
-  };
-
-  const handleConfirmDisconnect = () => {
-    disconnectWallet();
-    setShowDisconnectConfirm(false);
+    if (isWrongNetwork) switchNetwork();
+    else if (!isConnected) connectWallet();
+    else setShowDisconnect((p) => !p);
   };
 
   return (
-    <header className="glass-card mb-6" style={{ padding: '1rem 1.25rem', marginBottom: '1.5rem' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
-        {/* Brand & Identity */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <div
-            style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '0.5rem',
-              background: arenaMode ? 'linear-gradient(135deg, #836ef9 0%, #10b981 100%)' : 'var(--primary-accent)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#ffffff',
-            }}
-          >
-            <ShoppingBag size={19} />
+    <header style={{
+      background: 'var(--bg-surface)',
+      border: '1px solid var(--border-subtle)',
+      borderRadius: 'var(--radius-lg)',
+      padding: '0.75rem 1rem',
+      marginBottom: 'var(--space-lg)',
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+        {/* Left: Brand */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+          <div style={{
+            width: 30, height: 30, borderRadius: 'var(--radius-sm)',
+            background: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff',
+          }}>
+            <Zap size={15} />
           </div>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <h1 style={{ fontSize: '1.25rem', fontWeight: 800, letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
-                AgenBelanja
-              </h1>
-              <span className="badge badge-quoted" style={{ fontSize: '0.65rem' }}>
-                {arenaMode ? 'Monad On-Chain Smart Contract' : 'Monad x402 Agent'}
-              </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <span style={{ fontSize: '1rem', fontWeight: 800, letterSpacing: '-0.02em' }}>AgenBelanja</span>
+              <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 500 }}>Workspace</span>
             </div>
-            <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-              Parallel Autonomous Commerce Protocol
-            </p>
           </div>
         </div>
 
-        {/* Network & Wallet Status Pills */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', position: 'relative' }}>
-          {/* Arena Mode Toggle Button */}
+        {/* Right: Controls */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
+          {/* Arena Toggle */}
           <button
-            className="btn"
+            className="btn btn-ghost"
             onClick={onToggleArenaMode}
             style={{
-              padding: '0.35rem 0.75rem',
-              fontSize: '0.75rem',
-              borderRadius: '0.375rem',
-              background: arenaMode ? 'var(--primary-accent-subtle)' : 'rgba(255, 255, 255, 0.03)',
-              color: arenaMode ? 'var(--primary-accent)' : 'var(--text-secondary)',
-              border: `1px solid ${arenaMode ? 'var(--primary-accent)' : 'var(--border-subtle)'}`,
-              fontWeight: 600,
+              padding: '0.3rem 0.6rem', fontSize: '0.72rem',
+              borderRadius: 'var(--radius-sm)',
+              background: arenaMode ? 'var(--primary-subtle)' : 'transparent',
+              color: arenaMode ? 'var(--primary)' : 'var(--text-muted)',
+              border: arenaMode ? '1px solid rgba(131,110,249,0.2)' : '1px solid var(--border-subtle)',
             }}
-            title="Toggle Mode Arena On-Chain (Smart Contract Reverse Auction)"
+            title="Toggle Arena On-Chain mode"
           >
-            {arenaMode ? <ShieldCheck size={13} color="var(--primary-accent)" /> : <Zap size={13} />}
-            {arenaMode ? 'Mode Arena On-Chain ⚡ (ACTIVE)' : 'Mode Arena On-Chain ⚡'}
+            <ShieldCheck size={12} />
+            {arenaMode ? 'Arena On-Chain' : 'Arena Off'}
           </button>
 
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.4rem',
-              background: 'rgba(255, 255, 255, 0.03)',
-              border: '1px solid var(--border-subtle)',
-              padding: '0.35rem 0.75rem',
-              borderRadius: '0.375rem',
-              fontSize: '0.75rem',
-              fontWeight: 600,
-              color: 'var(--text-secondary)',
-            }}
-          >
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: isWrongNetwork ? 'var(--danger-red)' : 'var(--primary-accent)' }} />
-            Monad Testnet <span className="mono" style={{ color: 'var(--text-muted)' }}>(10143)</span>
+          {/* Network */}
+          <div className="chip" style={{ fontSize: '0.7rem' }}>
+            <span style={{ width: 5, height: 5, borderRadius: '50%', background: isWrongNetwork ? 'var(--danger)' : 'var(--success)' }} />
+            Monad <span className="mono" style={{ color: 'var(--text-muted)' }}>10143</span>
           </div>
 
+          {/* Wallet */}
           <div style={{ position: 'relative' }}>
             <button
               className="btn btn-secondary"
               onClick={handleWalletClick}
-              style={{
-                padding: '0.35rem 0.75rem',
-                fontSize: '0.75rem',
-                borderRadius: '0.375rem',
-                borderColor: isWrongNetwork ? 'var(--danger-red)' : undefined,
-              }}
-              title={isConnected ? 'Klik untuk opsi Disconnect Wallet' : 'Connect MetaMask Wallet'}
+              style={{ padding: '0.3rem 0.65rem', fontSize: '0.72rem', borderRadius: 'var(--radius-sm)' }}
             >
-              <Wallet size={13} color={isConnected ? (isWrongNetwork ? 'var(--danger-red)' : 'var(--success-green)') : 'var(--text-muted)'} />
+              <Wallet size={12} color={isConnected ? (isWrongNetwork ? 'var(--danger)' : 'var(--success)') : 'var(--text-muted)'} />
               {isConnected ? (
                 isWrongNetwork ? (
-                  <span style={{ color: 'var(--danger-red)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                    <AlertTriangle size={12} /> Switch to Monad
+                  <span style={{ color: 'var(--danger)', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                    <AlertTriangle size={11} /> Switch Network
                   </span>
                 ) : (
-                  <span className="mono" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: 'var(--text-primary)' }}>
-                    <CheckCircle2 size={12} color="var(--success-green)" /> {shortenedAddress}
+                  <span className="mono" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                    <CheckCircle2 size={11} color="var(--success)" /> {short}
                   </span>
                 )
               ) : (
-                <span>Connect Wallet</span>
+                'Connect Wallet'
               )}
             </button>
 
-            {/* Disconnect Dropdown */}
-            {showDisconnectConfirm && isConnected && (
-              <div
-                style={{
-                  position: 'absolute',
-                  right: 0,
-                  top: '120%',
-                  background: '#121520',
-                  border: '1px solid var(--border-strong)',
-                  borderRadius: '0.375rem',
-                  padding: '0.5rem',
-                  boxShadow: '0 4px 16px rgba(0,0,0,0.5)',
-                  zIndex: 50,
-                  whiteSpace: 'nowrap',
-                }}
-              >
+            {showDisconnect && isConnected && (
+              <div style={{
+                position: 'absolute', right: 0, top: '115%', zIndex: 50,
+                background: 'var(--bg-elevated)', border: '1px solid var(--border-strong)',
+                borderRadius: 'var(--radius-sm)', padding: '0.35rem',
+                boxShadow: '0 4px 16px rgba(0,0,0,0.5)',
+              }}>
                 <button
                   className="btn"
-                  onClick={handleConfirmDisconnect}
+                  onClick={() => { disconnectWallet(); setShowDisconnect(false); }}
                   style={{
-                    padding: '0.35rem 0.65rem',
-                    fontSize: '0.75rem',
-                    color: 'var(--danger-red)',
-                    background: 'var(--danger-red-subtle)',
-                    border: '1px solid rgba(239, 68, 68, 0.3)',
-                    borderRadius: '0.25rem',
-                    width: '100%',
+                    padding: '0.3rem 0.6rem', fontSize: '0.72rem',
+                    color: 'var(--danger)', background: 'var(--danger-subtle)',
+                    border: '1px solid rgba(239,68,68,0.2)', borderRadius: 'var(--radius-sm)', width: '100%',
                   }}
                 >
-                  <LogOut size={12} /> Disconnect Wallet
+                  <LogOut size={11} /> Disconnect
                 </button>
               </div>
             )}
           </div>
 
+          {/* Reset */}
           {onResetDemo && (
             <button
-              className="btn btn-secondary"
+              className="btn btn-ghost"
               onClick={onResetDemo}
-              style={{ padding: '0.35rem 0.65rem', fontSize: '0.75rem', borderRadius: '0.375rem' }}
-              title="Reset Demo State (Mengosongkan simulasi negosiasi)"
+              style={{ padding: '0.3rem 0.5rem', fontSize: '0.72rem' }}
+              title="Reset demo state"
             >
-              <RefreshCw size={12} /> Reset
+              Reset
             </button>
           )}
         </div>
