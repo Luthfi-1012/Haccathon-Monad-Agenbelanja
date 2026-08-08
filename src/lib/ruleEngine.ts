@@ -8,11 +8,18 @@ import {
 import {
   SEED_VENDORS,
   ScenarioPreset,
+  getScaledVendorsForScenario,
   requestVendorQuote,
   respondToCounterOffer,
 } from './vendorSimulator';
 
-export function getSeedVendorsForScenario(scenarioId: ScenarioPreset = 'scenario_2'): Record<VendorId, Vendor> {
+export function getSeedVendorsForScenario(
+  scenarioId: ScenarioPreset = 'scenario_2',
+  budgetAmount?: number
+): Record<VendorId, Vendor> {
+  if (budgetAmount && budgetAmount > 0) {
+    return getScaledVendorsForScenario(scenarioId, budgetAmount);
+  }
   return JSON.parse(JSON.stringify(SEED_VENDORS[scenarioId]));
 }
 

@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     }
 
     const scenario: ScenarioPreset = (scenarioId as ScenarioPreset) || 'scenario_2';
-    const seedVendors = getSeedVendorsForScenario(scenario);
+    const seedVendors = getSeedVendorsForScenario(scenario, budgetAmount);
     const orderId = `order_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
 
     const order = await runNegotiationOrchestrator(
