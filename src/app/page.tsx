@@ -6,6 +6,7 @@ import { OrderForm } from '@/components/OrderForm';
 import { VendorCards } from '@/components/VendorCards';
 import { Timeline } from '@/components/Timeline';
 import { ResultPanel } from '@/components/ResultPanel';
+import { ArenaCard } from '@/components/ArenaCard';
 import { Order, VendorId } from '@/types/negotiation';
 import { ScenarioPreset, SEED_VENDORS } from '@/lib/vendorSimulator';
 import { processX402Payment } from '@/lib/x402';
@@ -16,6 +17,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [isPaying, setIsPaying] = useState(false);
   const [budget, setBudget] = useState(50);
+  const [arenaMode, setArenaMode] = useState<boolean>(true);
 
   const scenarioVendors = SEED_VENDORS[currentScenario];
 
@@ -82,7 +84,11 @@ export default function Home() {
 
   return (
     <main className="container">
-      <Header onResetDemo={handleReset} />
+      <Header
+        onResetDemo={handleReset}
+        arenaMode={arenaMode}
+        onToggleArenaMode={() => setArenaMode((prev) => !prev)}
+      />
 
       <OrderForm
         onStartNegotiation={handleStartNegotiation}
@@ -102,12 +108,16 @@ export default function Home() {
           <Timeline timeline={order?.timeline || []} />
         </div>
         <div>
-          <ResultPanel
-            order={order}
-            onPayWithX402={handlePayWithX402}
-            isPaying={isPaying}
-            onResetDemo={handleReset}
-          />
+          {arenaMode ? (
+            <ArenaCard order={order} onResetDemo={handleReset} />
+          ) : (
+            <ResultPanel
+              order={order}
+              onPayWithX402={handlePayWithX402}
+              isPaying={isPaying}
+              onResetDemo={handleReset}
+            />
+          )}
         </div>
       </div>
     </main>

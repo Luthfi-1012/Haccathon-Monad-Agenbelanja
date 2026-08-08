@@ -1,14 +1,16 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ShoppingBag, Wallet, CheckCircle2, RefreshCw, AlertTriangle, LogOut } from 'lucide-react';
+import { ShoppingBag, Wallet, CheckCircle2, RefreshCw, AlertTriangle, LogOut, Zap, ShieldCheck } from 'lucide-react';
 import { useWallet } from '@/context/WalletContext';
 
 interface HeaderProps {
   onResetDemo?: () => void;
+  arenaMode: boolean;
+  onToggleArenaMode: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onResetDemo }) => {
+export const Header: React.FC<HeaderProps> = ({ onResetDemo, arenaMode, onToggleArenaMode }) => {
   const { address, isConnected, isWrongNetwork, connectWallet, disconnectWallet, switchNetwork } = useWallet();
   const [showDisconnectConfirm, setShowDisconnectConfirm] = useState(false);
 
@@ -39,7 +41,7 @@ export const Header: React.FC<HeaderProps> = ({ onResetDemo }) => {
               width: '36px',
               height: '36px',
               borderRadius: '0.5rem',
-              background: 'var(--primary-accent)',
+              background: arenaMode ? 'linear-gradient(135deg, #836ef9 0%, #10b981 100%)' : 'var(--primary-accent)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -54,7 +56,7 @@ export const Header: React.FC<HeaderProps> = ({ onResetDemo }) => {
                 AgenBelanja
               </h1>
               <span className="badge badge-quoted" style={{ fontSize: '0.65rem' }}>
-                Monad x402 Agent
+                {arenaMode ? 'Monad On-Chain Smart Contract' : 'Monad x402 Agent'}
               </span>
             </div>
             <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -65,6 +67,25 @@ export const Header: React.FC<HeaderProps> = ({ onResetDemo }) => {
 
         {/* Network & Wallet Status Pills */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', position: 'relative' }}>
+          {/* Arena Mode Toggle Button */}
+          <button
+            className="btn"
+            onClick={onToggleArenaMode}
+            style={{
+              padding: '0.35rem 0.75rem',
+              fontSize: '0.75rem',
+              borderRadius: '0.375rem',
+              background: arenaMode ? 'var(--primary-accent-subtle)' : 'rgba(255, 255, 255, 0.03)',
+              color: arenaMode ? 'var(--primary-accent)' : 'var(--text-secondary)',
+              border: `1px solid ${arenaMode ? 'var(--primary-accent)' : 'var(--border-subtle)'}`,
+              fontWeight: 600,
+            }}
+            title="Toggle Mode Arena On-Chain (Smart Contract Reverse Auction)"
+          >
+            {arenaMode ? <ShieldCheck size={13} color="var(--primary-accent)" /> : <Zap size={13} />}
+            {arenaMode ? 'Mode Arena On-Chain ⚡ (ACTIVE)' : 'Mode Arena On-Chain ⚡'}
+          </button>
+
           <div
             style={{
               display: 'flex',
