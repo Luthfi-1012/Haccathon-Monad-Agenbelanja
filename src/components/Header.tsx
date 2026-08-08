@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ShoppingBag, Zap, Wallet, CheckCircle2, RefreshCw } from 'lucide-react';
+import { ShoppingBag, Wallet, CheckCircle2, RefreshCw } from 'lucide-react';
 
 interface HeaderProps {
   onResetDemo?: () => void;
@@ -18,86 +18,83 @@ export const Header: React.FC<HeaderProps> = ({ onResetDemo }) => {
   };
 
   return (
-    <header className="glass-card mb-6" style={{ padding: '1rem 1.5rem' }}>
+    <header className="glass-card mb-6" style={{ padding: '1rem 1.25rem', marginBottom: '1.5rem' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
-        {/* Wordmark & Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+        {/* Brand & Identity */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <div
             style={{
-              width: '42px',
-              height: '42px',
-              borderRadius: '12px',
-              background: 'linear-gradient(135deg, #836ef9 0%, #20e2a2 100%)',
+              width: '36px',
+              height: '36px',
+              borderRadius: '0.5rem',
+              background: 'var(--primary-accent)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 4px 16px rgba(131, 110, 249, 0.4)',
+              color: '#ffffff',
             }}
           >
-            <ShoppingBag size={22} color="#090a0f" />
+            <ShoppingBag size={19} />
           </div>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-              <h1 style={{ fontSize: '1.4rem', fontWeight: 800, letterSpacing: '-0.02em', background: 'linear-gradient(90deg, #ffffff 0%, #cbd5e1 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <h1 style={{ fontSize: '1.25rem', fontWeight: 800, letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
                 AgenBelanja
               </h1>
-              <span className="badge badge-selected" style={{ fontSize: '0.65rem', padding: '0.15rem 0.55rem' }}>
-                <Zap size={10} /> Powered by Monad + x402
+              <span className="badge badge-quoted" style={{ fontSize: '0.65rem' }}>
+                Monad x402 Agent
               </span>
             </div>
-            <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-              Tactical Parallel Commerce Command Console
+            <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+              Parallel Autonomous Commerce Protocol
             </p>
           </div>
         </div>
 
-        {/* Network & Wallet Controls */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
-          {/* Monad Network Badge */}
+        {/* Network & Wallet Status Pills */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
               gap: '0.4rem',
-              background: 'rgba(131, 110, 249, 0.12)',
-              border: '1px solid rgba(131, 110, 249, 0.3)',
-              padding: '0.4rem 0.75rem',
-              borderRadius: '2rem',
-              fontSize: '0.78rem',
+              background: 'rgba(255, 255, 255, 0.03)',
+              border: '1px solid var(--border-subtle)',
+              padding: '0.35rem 0.75rem',
+              borderRadius: '0.375rem',
+              fontSize: '0.75rem',
               fontWeight: 600,
-              color: '#a78bfa',
+              color: 'var(--text-secondary)',
             }}
           >
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#836ef9', boxShadow: '0 0 8px #836ef9' }} />
-            Monad Testnet (10143)
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--primary-accent)' }} />
+            Monad Testnet <span className="mono" style={{ color: 'var(--text-muted)' }}>(10143)</span>
           </div>
 
-          {/* Wallet State Button */}
           <button
             className="btn btn-secondary"
             onClick={toggleWalletState}
-            style={{ padding: '0.4rem 0.85rem', fontSize: '0.8rem', borderRadius: '2rem' }}
-            title="Klik untuk mengganti status wallet demo"
+            style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem', borderRadius: '0.375rem' }}
+            title="Toggle wallet status for demo testing"
           >
-            <Wallet size={14} color={walletState === 'CONNECTED' ? '#20e2a2' : walletState === 'WRONG_NETWORK' ? '#ef4444' : 'var(--text-muted)'} />
+            <Wallet size={13} color={walletState === 'CONNECTED' ? 'var(--success-green)' : walletState === 'WRONG_NETWORK' ? 'var(--danger-red)' : 'var(--text-muted)'} />
             {walletState === 'CONNECTED' && (
-              <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                <CheckCircle2 size={13} color="#20e2a2" /> {walletAddress}
+              <span className="mono" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: 'var(--text-primary)' }}>
+                <CheckCircle2 size={12} color="var(--success-green)" /> {walletAddress}
               </span>
             )}
-            {walletState === 'WRONG_NETWORK' && <span style={{ color: '#ef4444' }}>Wrong Network</span>}
+            {walletState === 'WRONG_NETWORK' && <span style={{ color: 'var(--danger-red)' }}>Wrong Network</span>}
             {walletState === 'DISCONNECTED' && <span>Connect Wallet</span>}
           </button>
 
-          {/* Reset Demo Button */}
           {onResetDemo && (
             <button
               className="btn btn-secondary"
               onClick={onResetDemo}
-              style={{ padding: '0.4rem 0.75rem', fontSize: '0.8rem', borderRadius: '2rem' }}
+              style={{ padding: '0.35rem 0.65rem', fontSize: '0.75rem', borderRadius: '0.375rem' }}
               title="Reset Demo State"
             >
-              <RefreshCw size={13} /> Reset Demo
+              <RefreshCw size={12} /> Reset
             </button>
           )}
         </div>
