@@ -1,5 +1,6 @@
 import React from 'react';
 import './globals.css';
+import { WalletProvider } from '@/context/WalletContext';
 
 export const metadata = {
   title: 'AgenBelanja — Agen Negosiasi Pembelian x402 Monad',
@@ -13,7 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="id">
-      <body>{children}</body>
+      <body>
+        <WalletProvider>{children}</WalletProvider>
+      </body>
     </html>
   );
 }

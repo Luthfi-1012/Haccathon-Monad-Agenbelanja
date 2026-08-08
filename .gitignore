@@ -31,3 +31,8 @@ next-env.d.ts
 .superpowers/
 AGENTS.md
 CLAUDE.md
+
+# foundry
+/cache/
+/broadcast/
+/lib/

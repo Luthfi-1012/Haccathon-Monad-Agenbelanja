@@ -1,20 +1,24 @@
 'use client';
 
-import React, { useState } from 'react';
-import { ShoppingBag, Wallet, CheckCircle2, RefreshCw } from 'lucide-react';
+import React from 'react';
+import { ShoppingBag, Wallet, CheckCircle2, RefreshCw, AlertTriangle } from 'lucide-react';
+import { useWallet } from '@/context/WalletContext';
 
 interface HeaderProps {
   onResetDemo?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({ onResetDemo }) => {
-  const [walletState, setWalletState] = useState<'CONNECTED' | 'DISCONNECTED' | 'WRONG_NETWORK'>('CONNECTED');
-  const walletAddress = '0x71C...4e8B';
+  const { address, isConnected, isWrongNetwork, connectWallet, switchNetwork } = useWallet();
 
-  const toggleWalletState = () => {
-    if (walletState === 'CONNECTED') setWalletState('WRONG_NETWORK');
-    else if (walletState === 'WRONG_NETWORK') setWalletState('DISCONNECTED');
-    else setWalletState('CONNECTED');
+  const shortenedAddress = address ? `${address.substring(0, 6)}...${address.substring(address.length - 4)}` : '';
+
+  const handleWalletClick = () => {
+    if (isWrongNetwork) {
+      switchNetwork();
+    } else if (!isConnected) {
+      connectWallet();
+    }
   };
 
   return (
@@ -67,24 +71,35 @@ export const Header: React.FC<HeaderProps> = ({ onResetDemo }) => {
               color: 'var(--text-secondary)',
             }}
           >
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--primary-accent)' }} />
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: isWrongNetwork ? 'var(--danger-red)' : 'var(--primary-accent)' }} />
             Monad Testnet <span className="mono" style={{ color: 'var(--text-muted)' }}>(10143)</span>
           </div>
 
           <button
             className="btn btn-secondary"
-            onClick={toggleWalletState}
-            style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem', borderRadius: '0.375rem' }}
-            title="Toggle wallet status for demo testing"
+            onClick={handleWalletClick}
+            style={{
+              padding: '0.35rem 0.75rem',
+              fontSize: '0.75rem',
+              borderRadius: '0.375rem',
+              borderColor: isWrongNetwork ? 'var(--danger-red)' : undefined,
+            }}
+            title={isConnected ? 'Wallet Connected' : 'Connect MetaMask Wallet'}
           >
-            <Wallet size={13} color={walletState === 'CONNECTED' ? 'var(--success-green)' : walletState === 'WRONG_NETWORK' ? 'var(--danger-red)' : 'var(--text-muted)'} />
-            {walletState === 'CONNECTED' && (
-              <span className="mono" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: 'var(--text-primary)' }}>
-                <CheckCircle2 size={12} color="var(--success-green)" /> {walletAddress}
-              </span>
+            <Wallet size={13} color={isConnected ? (isWrongNetwork ? 'var(--danger-red)' : 'var(--success-green)') : 'var(--text-muted)'} />
+            {isConnected ? (
+              isWrongNetwork ? (
+                <span style={{ color: 'var(--danger-red)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                  <AlertTriangle size={12} /> Switch to Monad
+                </span>
+              ) : (
+                <span className="mono" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: 'var(--text-primary)' }}>
+                  <CheckCircle2 size={12} color="var(--success-green)" /> {shortenedAddress}
+                </span>
+              )
+            ) : (
+              <span>Connect Wallet</span>
             )}
-            {walletState === 'WRONG_NETWORK' && <span style={{ color: 'var(--danger-red)' }}>Wrong Network</span>}
-            {walletState === 'DISCONNECTED' && <span>Connect Wallet</span>}
           </button>
 
           {onResetDemo && (

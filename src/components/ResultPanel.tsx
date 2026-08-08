@@ -5,6 +5,8 @@ import { Award, CheckCircle2, ShieldAlert, ArrowRight, ExternalLink, Zap, Refres
 import { Order } from '../types/negotiation';
 import gsap from 'gsap';
 
+import { useWallet } from '@/context/WalletContext';
+
 interface ResultPanelProps {
   order: Order | null;
   onPayWithX402: (orderId: string, simulateFailure?: boolean) => Promise<void>;
@@ -20,6 +22,7 @@ export const ResultPanel: React.FC<ResultPanelProps> = ({
 }) => {
   const [showReceiptModal, setShowReceiptModal] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+  const { address } = useWallet();
 
   useEffect(() => {
     if (cardRef.current && order) {
@@ -37,7 +40,9 @@ export const ResultPanel: React.FC<ResultPanelProps> = ({
   const isComplete = order.status === 'NEGOTIATION_COMPLETE';
   const isSettled = order.status === 'SETTLEMENT_SUCCESS';
   const isPaymentFailed = order.status === 'SETTLEMENT_FAILED';
-  const walletAddress = '0x71C...4e8B';
+  const walletAddress = address
+    ? `${address.substring(0, 6)}...${address.substring(address.length - 4)}`
+    : '0x71C...4e8B';
   const isDemoPayment = order.transactionReference === 'DEMO_MODE_VERIFIED';
 
   return (
