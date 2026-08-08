@@ -3,7 +3,7 @@ import Link from 'next/link';
 import {
   Zap, ShieldCheck, ArrowRight, ChevronDown, Eye,
   Store, Clock, CheckCircle2, Activity, Users,
-  Lock, FileText, Sparkles
+  Lock, Sparkles, Layers, Cpu, Check, X
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -11,344 +11,274 @@ export default function LandingPage() {
     <>
       {/* ─── Navbar ─── */}
       <nav className="landing-nav">
-        <div className="nav-inner">
+        <div className="nav-inner" style={{ maxWidth: 1120, margin: '0 auto', padding: '0 1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Link href="/" className="wordmark">
-            <span className="wordmark-icon"><Zap size={15} /></span>
-            AgenBelanja
+            <span className="wordmark-icon"><Zap size={17} /></span>
+            <span>AgenBelanja</span>
           </Link>
 
-          <div className="nav-links">
-            <a href="#how-it-works" className="nav-link">How It Works</a>
-            <a href="#trust" className="nav-link">Why Trust It</a>
-            <a href="#scenarios" className="nav-link">Demo Scenarios</a>
+          <div className="nav-links" style={{ display: 'flex', alignItems: 'center', gap: '1.75rem' }}>
+            <a href="#how-it-works" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)' }}>How It Works</a>
+            <a href="#trust" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Safeguards</a>
+            <a href="#scenarios" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Demo Scenarios</a>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <span className="chip">
-              <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--primary)' }} />
-              Built on Monad
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--primary)', boxShadow: '0 0 8px var(--primary)' }} />
+              Monad Testnet
             </span>
-            <Link href="/app" className="btn btn-primary" style={{ padding: '0.5rem 1.1rem', fontSize: '0.82rem' }}>
-              Try Demo <ArrowRight size={14} />
+            <Link href="/app" className="btn btn-primary" style={{ padding: '0.55rem 1.25rem', fontSize: '0.85rem', borderRadius: 'var(--radius-sm)' }}>
+              Open App <ArrowRight size={15} />
             </Link>
           </div>
         </div>
       </nav>
 
       {/* ─── Hero ─── */}
-      <section className="hero">
+      <section className="hero" style={{ padding: '4.5rem 0 3.5rem', textAlign: 'center' }}>
         <div className="container">
-          <div className="hero-eyebrow animate-fade-in">
-            <Sparkles size={13} />
-            AGENTIC COMMERCE · MONAD
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+            padding: '0.35rem 0.85rem', borderRadius: '999px',
+            background: 'var(--primary-subtle)', border: '1px solid var(--border-default)',
+            fontSize: '0.75rem', fontWeight: 700, color: '#a594fd',
+            letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '1.5rem',
+          }}>
+            <Sparkles size={13} color="var(--primary)" />
+            Agentic Commerce Protocol · Monad
           </div>
 
-          <h1 className="hero-headline animate-slide-up">
-            Shop smarter.<br />
-            Negotiation runs on autopilot.
+          <h1 className="hero-headline" style={{ maxWidth: 780, margin: '0 auto 1.25rem' }}>
+            Automated shopping negotiations.<br />
+            Your budget stays locked.
           </h1>
 
-          <p className="hero-sub animate-slide-up" style={{ animationDelay: '100ms' }}>
-            Enter what you need and your maximum budget. AgenBelanja requests quotes from multiple vendors in parallel, negotiates the price, and only picks deals that are safe for your budget.
+          <p style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', maxWidth: 620, margin: '0 auto 2rem', lineHeight: 1.6 }}>
+            Set your item and maximum budget limit. AgenBelanja deploys 3 parallel agents to request quotes, evaluate prices, and execute the best deal on Monad.
           </p>
 
-          <div className="hero-ctas animate-slide-up" style={{ animationDelay: '200ms' }}>
-            <Link href="/app" className="btn btn-primary hero-cta-primary">
-              Start Negotiation <ArrowRight size={16} />
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+            <Link href="/app" className="btn btn-primary" style={{ padding: '0.9rem 2.25rem', fontSize: '1rem', borderRadius: 'var(--radius-md)' }}>
+              Launch Workspace <ArrowRight size={17} />
             </Link>
-            <a href="#how-it-works" className="btn btn-secondary" style={{ padding: '0.85rem 1.5rem' }}>
-              See How It Works <ChevronDown size={15} />
+            <a href="#how-it-works" className="btn btn-secondary" style={{ padding: '0.9rem 1.75rem', fontSize: '0.95rem', borderRadius: 'var(--radius-md)' }}>
+              How It Works <ChevronDown size={16} />
             </a>
           </div>
 
-          {/* Interactive Preview */}
-          <div className="preview-container animate-slide-up" style={{ animationDelay: '350ms' }}>
-            {/* Request */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--space-md)', flexWrap: 'wrap', gap: '0.5rem' }}>
+          {/* Interactive Preview Box */}
+          <div className="glass-card" style={{
+            maxWidth: 720, margin: '3rem auto 0', padding: '1.5rem',
+            textAlign: 'left', background: 'var(--bg-surface)', border: '1px solid var(--border-default)',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Store size={14} color="var(--primary)" />
-                <span style={{ fontSize: '0.82rem', fontWeight: 700 }}>Purchase Request</span>
+                <Cpu size={16} color="var(--primary)" />
+                <span className="font-viga" style={{ fontSize: '1rem', color: '#fff' }}>Autonomous Agent Request</span>
               </div>
-              <span className="chip" style={{ background: 'var(--primary-subtle)', color: 'var(--primary)', borderColor: 'rgba(131,110,249,0.2)' }}>
-                <Users size={11} /> 3 vendors in parallel
+              <span className="chip" style={{ background: 'var(--primary-subtle)', color: '#a594fd', borderColor: 'var(--border-default)' }}>
+                <Users size={12} /> 3 Vendors Negotiating
               </span>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '0.75rem', marginBottom: 'var(--space-lg)' }}>
-              <div style={{ padding: '0.6rem 0.85rem', background: 'var(--bg-recessed)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)', fontSize: '0.85rem' }}>
-                <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', display: 'block' }}>Item</span>
-                Gaming Headset
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '1rem', marginBottom: '1.25rem' }}>
+              <div style={{ padding: '0.75rem 1rem', background: 'var(--bg-recessed)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+                <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', fontWeight: 600, textTransform: 'uppercase' }}>Target Product</span>
+                <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)' }}>Gaming Headset Pro</span>
               </div>
-              <div style={{ padding: '0.6rem 0.85rem', background: 'var(--bg-recessed)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)', fontSize: '0.85rem', minWidth: '100px' }}>
-                <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', display: 'block' }}>Budget</span>
-                <span className="mono" style={{ color: 'var(--primary)', fontWeight: 700 }}>50 USDC</span>
+              <div style={{ padding: '0.75rem 1rem', background: 'var(--bg-recessed)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)', minWidth: 120 }}>
+                <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', fontWeight: 600, textTransform: 'uppercase' }}>Budget Limit</span>
+                <span className="mono" style={{ fontSize: '1rem', color: 'var(--primary)', fontWeight: 700 }}>50 USDC</span>
               </div>
             </div>
 
-            {/* Mini Vendor Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem', marginBottom: 'var(--space-md)' }}>
+            {/* Vendor Cards Preview */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.65rem', marginBottom: '1rem' }}>
               {[
-                { name: 'TechStore A', initial: 'T', quote: 48, status: 'winner', color: 'var(--success)' },
-                { name: 'ElectroHub B', initial: 'E', quote: 55, status: 'quoted', color: 'var(--primary)' },
-                { name: 'DigitalMart C', initial: 'D', quote: 62, status: 'rejected', color: 'var(--text-muted)' },
+                { name: 'TechStore A', quote: 48, status: 'WINNER', isWinner: true },
+                { name: 'ElectroHub B', quote: 55, status: 'COUNTER', isWinner: false },
+                { name: 'DigitalMart C', quote: 62, status: 'REJECTED', isWinner: false },
               ].map((v) => (
                 <div key={v.name} style={{
-                  padding: '0.6rem',
-                  background: v.status === 'winner' ? 'var(--success-subtle)' : 'var(--bg-recessed)',
+                  padding: '0.75rem',
+                  background: v.isWinner ? 'var(--primary-subtle)' : 'var(--bg-recessed)',
                   borderRadius: 'var(--radius-sm)',
-                  border: `1px solid ${v.status === 'winner' ? 'rgba(16,185,129,0.25)' : 'var(--border-subtle)'}`,
+                  border: `1px solid ${v.isWinner ? 'var(--primary)' : 'var(--border-subtle)'}`,
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', marginBottom: '0.3rem' }}>
-                    <span style={{
-                      width: 20, height: 20, borderRadius: '50%', fontSize: '0.65rem', fontWeight: 700,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      background: v.status === 'winner' ? 'var(--success)' : 'var(--bg-elevated)',
-                      color: v.status === 'winner' ? '#fff' : 'var(--text-muted)',
-                    }}>
-                      {v.initial}
-                    </span>
-                    <span style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--text-primary)' }}>{v.name}</span>
-                  </div>
-                  <div className="mono" style={{ fontSize: '0.78rem', fontWeight: 700, color: v.color }}>
+                  <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.2rem' }}>{v.name}</div>
+                  <div className="mono" style={{ fontSize: '0.9rem', fontWeight: 700, color: v.isWinner ? 'var(--primary)' : 'var(--text-muted)' }}>
                     {v.quote} USDC
                   </div>
-                  {v.status === 'winner' && (
-                    <div style={{ fontSize: '0.65rem', color: 'var(--success)', display: 'flex', alignItems: 'center', gap: '0.2rem', marginTop: '0.2rem' }}>
-                      <CheckCircle2 size={10} /> Best deal
+                  {v.isWinner && (
+                    <div style={{ fontSize: '0.68rem', color: '#a594fd', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.2rem', marginTop: '0.3rem' }}>
+                      <Check size={11} /> Best Match
                     </div>
                   )}
                 </div>
               ))}
             </div>
 
-            {/* Mini Timeline */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+            {/* Event Log Preview */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
               {[
-                { icon: <Clock size={11} />, text: 'Quotes received from 3 vendors', color: 'var(--text-secondary)' },
-                { icon: <Activity size={11} />, text: 'Counter-offer sent: 50 USDC', color: 'var(--primary)' },
-                { icon: <CheckCircle2 size={11} />, text: 'Deal agreed — saved 2 USDC', color: 'var(--success)' },
-              ].map((e, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.3rem 0.5rem', borderRadius: 'var(--radius-sm)', background: 'var(--bg-recessed)', fontSize: '0.72rem', color: e.color }}>
+                { icon: <Clock size={12} color="var(--text-muted)" />, text: '3 vendor quotes fetched in parallel (100ms)' },
+                { icon: <Activity size={12} color="var(--primary)" />, text: 'Agent evaluates budget cap: 50 USDC' },
+                { icon: <CheckCircle2 size={12} color="var(--success)" />, text: 'Deal agreed with TechStore A (48 USDC) — 2 USDC saved' },
+              ].map((e, idx) => (
+                <div key={idx} style={{
+                  display: 'flex', alignItems: 'center', gap: '0.5rem',
+                  padding: '0.45rem 0.75rem', background: 'var(--bg-recessed)',
+                  borderRadius: 'var(--radius-sm)', fontSize: '0.78rem', color: 'var(--text-secondary)',
+                }}>
                   {e.icon}
                   <span>{e.text}</span>
                 </div>
               ))}
             </div>
           </div>
-
-          {/* Tech Strip */}
-          <div className="tech-strip">
-            {[
-              { icon: <Users size={13} />, text: '3 Parallel Vendors' },
-              { icon: <ShieldCheck size={13} />, text: 'Budget Guard' },
-              { icon: <Zap size={13} />, text: 'x402 Settlement' },
-              { icon: <Lock size={13} />, text: 'Monad Testnet' },
-            ].map((item) => (
-              <div key={item.text} className="tech-strip-item">
-                {item.icon}
-                <span>{item.text}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── Problem → Solution ─── */}
-      <section className="section" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-        <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'var(--space-2xl)' }}>
-            <div>
-              <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--danger)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'var(--space-sm)', display: 'block' }}>The Problem</span>
-              <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: 'var(--space-lg)' }}>
-                Manual shopping leads to late decisions.
-              </h2>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
-                {[
-                  'Comparing prices across vendors takes too long',
-                  'Initial quotes often exceed your budget',
-                  'No transparent record of how decisions were made',
-                ].map((item, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem' }}>
-                    <span className="mono" style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--danger)', lineHeight: 1, minWidth: '24px' }}>{i + 1}</span>
-                    <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--success)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'var(--space-sm)', display: 'block' }}>The Solution</span>
-              <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: 'var(--space-lg)' }}>
-                AgenBelanja turns it into a measurable workflow.
-              </h2>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
-                {[
-                  'Parallel quotes — three vendors respond at once',
-                  'One controlled counter-offer that never exceeds budget',
-                  'Winner selection that respects your limit, every time',
-                ].map((item, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem' }}>
-                    <CheckCircle2 size={16} style={{ color: 'var(--success)', marginTop: '0.15rem', flexShrink: 0 }} />
-                    <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
       {/* ─── How It Works ─── */}
-      <section id="how-it-works" className="section">
+      <section id="how-it-works" style={{ padding: '4rem 0', borderTop: '1px solid var(--border-subtle)' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: 'var(--space-2xl)' }}>
-            <h2 className="section-heading">How It Works</h2>
-            <p className="section-subheading" style={{ margin: '0 auto' }}>
-              Four steps from request to settlement. The agent handles everything in between.
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <h2 className="section-heading" style={{ marginBottom: '0.5rem' }}>How AgenBelanja Works</h2>
+            <p style={{ fontSize: '1rem', color: 'var(--text-secondary)', maxWidth: 540, margin: '0 auto' }}>
+              Parallel quote requests, automated budget safety, and instant execution.
             </p>
           </div>
 
-          <div className="stepper">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem' }}>
             {[
-              { num: '01', title: 'Set your need', desc: 'Choose what to buy and set your maximum budget. The agent will never exceed this limit.' },
-              { num: '02', title: 'Parallel quotes', desc: 'Three vendors receive your request simultaneously and respond with their initial prices.' },
-              { num: '03', title: 'Agent evaluates', desc: 'Direct match if a price fits, or one counter-offer — always within your budget.' },
-              { num: '04', title: 'Settle transparently', desc: 'Successful deal gets paid. No deal means no payment. Every step is visible.' },
+              { num: '01', title: 'Input Product & Limit', desc: 'Define what you need and your absolute maximum budget in USDC.' },
+              { num: '02', title: 'Parallel Agent Quotes', desc: 'Agent contacts 3 simulation vendors simultaneously to evaluate prices.' },
+              { num: '03', title: 'Smart Rule Evaluation', desc: 'Direct match or 1 counter-offer within budget bounds. Offers over budget are rejected.' },
+              { num: '04', title: 'x402 & Monad Settlement', desc: 'Settle instantly via x402 payment flow or Monad Testnet smart contract escrow.' },
             ].map((step) => (
-              <div key={step.num} className="stepper-item">
-                <div className="stepper-number">{step.num}</div>
-                <h3 className="stepper-title">{step.title}</h3>
-                <p className="stepper-desc">{step.desc}</p>
+              <div key={step.num} className="glass-card" style={{ padding: '1.5rem', position: 'relative' }}>
+                <div className="font-viga mono" style={{ fontSize: '1.5rem', color: 'var(--primary)', marginBottom: '0.75rem', opacity: 0.8 }}>
+                  {step.num}
+                </div>
+                <h3 className="font-viga" style={{ fontSize: '1.1rem', color: '#fff', marginBottom: '0.4rem' }}>
+                  {step.title}
+                </h3>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                  {step.desc}
+                </p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ─── Trust & Technical ─── */}
-      <section id="trust" className="trust-section">
+      {/* ─── Safeguards ─── */}
+      <section id="trust" style={{ padding: '4rem 0', background: 'var(--bg-surface)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: 'var(--space-xl)' }}>
-            <h2 className="section-heading">A fast agent still needs to be trusted.</h2>
-            <p className="section-subheading" style={{ margin: '0 auto' }}>
-              Three safeguards that keep you in control while the agent works.
+          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+            <h2 className="section-heading" style={{ marginBottom: '0.5rem' }}>Built-in Safeguards</h2>
+            <p style={{ fontSize: '1rem', color: 'var(--text-secondary)', maxWidth: 500, margin: '0 auto' }}>
+              Full transparency and total protection for your budget.
             </p>
           </div>
 
-          <div className="trust-grid">
-            <div className="trust-card">
-              <div className="trust-icon" style={{ background: 'var(--success-subtle)' }}>
-                <ShieldCheck size={20} color="var(--success)" />
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+            <div className="glass-card" style={{ padding: '1.5rem' }}>
+              <div style={{ width: 38, height: 38, borderRadius: 'var(--radius-sm)', background: 'var(--primary-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)', marginBottom: '1rem' }}>
+                <ShieldCheck size={20} />
               </div>
-              <h3 className="trust-title">Budget Guard</h3>
+              <h3 className="font-viga" style={{ fontSize: '1.15rem', color: '#fff', marginBottom: '0.35rem' }}>Strict Budget Guard</h3>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                The agent never submits a deal above your limit. If no vendor fits, the process stops — no forced transactions.
+                The agent rule engine enforces your budget ceiling. If no vendor quote meets the requirement, the transaction is safely canceled.
               </p>
             </div>
 
-            <div className="trust-card">
-              <div className="trust-icon" style={{ background: 'var(--primary-subtle)' }}>
-                <Eye size={20} color="var(--primary)" />
+            <div className="glass-card" style={{ padding: '1.5rem' }}>
+              <div style={{ width: 38, height: 38, borderRadius: 'var(--radius-sm)', background: 'var(--primary-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)', marginBottom: '1rem' }}>
+                <Eye size={20} />
               </div>
-              <h3 className="trust-title">Execution Timeline</h3>
+              <h3 className="font-viga" style={{ fontSize: '1.15rem', color: '#fff', marginBottom: '0.35rem' }}>Transparent Audit Trail</h3>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                Every decision is displayed, not just claimed. Quotes, counter-offers, vendor responses — all visible in sequence.
+                Every message, quote request, counter-offer, and decision is logged line by line on the execution timeline.
               </p>
             </div>
 
-            <div className="trust-card">
-              <div className="trust-icon" style={{ background: 'var(--accent-cyan-subtle)' }}>
-                <Lock size={20} color="var(--accent-cyan)" />
+            <div className="glass-card" style={{ padding: '1.5rem' }}>
+              <div style={{ width: 38, height: 38, borderRadius: 'var(--radius-sm)', background: 'var(--primary-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)', marginBottom: '1rem' }}>
+                <Lock size={20} />
               </div>
-              <h3 className="trust-title">Payment Ready</h3>
+              <h3 className="font-viga" style={{ fontSize: '1.15rem', color: '#fff', marginBottom: '0.35rem' }}>Monad Smart Contract</h3>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                x402 for settlement after agreement. Arena On-Chain available as an optional trust layer with on-chain escrow.
+                Optionally toggle Mode Arena On-Chain to escrow funds in `NegosiasiArena.sol` with automatic refund of change.
               </p>
             </div>
           </div>
-
-          <p style={{ textAlign: 'center', fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 'var(--space-xl)', maxWidth: '520px', margin: 'var(--space-xl) auto 0' }}>
-            Arena On-Chain mode activates only when enabled in the demo. Default mode uses x402 payment flow.
-          </p>
         </div>
       </section>
 
       {/* ─── Demo Scenarios ─── */}
-      <section id="scenarios" className="section">
+      <section id="scenarios" style={{ padding: '4rem 0' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: 'var(--space-2xl)' }}>
-            <h2 className="section-heading">Try a Scenario</h2>
-            <p className="section-subheading" style={{ margin: '0 auto' }}>
-              Three real outcomes. Pick one and see how the agent handles it.
+          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+            <h2 className="section-heading" style={{ marginBottom: '0.5rem' }}>Try a Demo Scenario</h2>
+            <p style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>
+              Click any scenario to jump directly into the pre-filled workspace.
             </p>
           </div>
 
-          <div className="scenario-grid">
-            <Link href="/app?scenario=direct" className="scenario-card" style={{ borderColor: 'rgba(16,185,129,0.15)' }}>
-              <div className="scenario-number">01</div>
-              <h3 className="scenario-title">Direct Match</h3>
-              <p className="scenario-desc">Mechanical keyboard, Budget 50 USDC — the best price already fits.</p>
-              <span className="badge badge-accepted" style={{ fontSize: '0.68rem' }}>
-                <CheckCircle2 size={10} /> Instant Match
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
+            <Link href="/app?scenario=direct" className="glass-card" style={{ display: 'block', textDecoration: 'none' }}>
+              <div className="mono" style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>SCENARIO 01</div>
+              <h3 className="font-viga" style={{ fontSize: '1.15rem', color: '#fff', marginBottom: '0.3rem' }}>Direct Match</h3>
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+                Mechanical keyboard (Budget 50 USDC). Initial quote fits budget directly.
+              </p>
+              <span className="badge badge-accepted" style={{ fontSize: '0.7rem' }}>
+                <CheckCircle2 size={11} /> Instant Agreement
               </span>
             </Link>
 
-            <Link href="/app?scenario=deal" className="scenario-card" style={{ borderColor: 'rgba(131,110,249,0.15)' }}>
-              <div className="scenario-number">02</div>
-              <h3 className="scenario-title">Negotiated Deal</h3>
-              <p className="scenario-desc">Gaming headset, Budget 50 USDC — the agent negotiates until a deal is reached.</p>
-              <span className="badge badge-quoted" style={{ fontSize: '0.68rem' }}>
-                <Activity size={10} /> Counter-offer Sent
+            <Link href="/app?scenario=deal" className="glass-card" style={{ display: 'block', textDecoration: 'none' }}>
+              <div className="mono" style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>SCENARIO 02</div>
+              <h3 className="font-viga" style={{ fontSize: '1.15rem', color: '#fff', marginBottom: '0.3rem' }}>Negotiated Deal</h3>
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+                Gaming headset (Budget 50 USDC). Agent negotiates 58 USDC quote down to 50 USDC.
+              </p>
+              <span className="badge badge-quoted" style={{ fontSize: '0.7rem' }}>
+                <Activity size={11} /> Agent Counter-Offer
               </span>
             </Link>
 
-            <Link href="/app?scenario=nodeal" className="scenario-card" style={{ borderColor: 'rgba(239,68,68,0.1)' }}>
-              <div className="scenario-number">03</div>
-              <h3 className="scenario-title">No Deal</h3>
-              <p className="scenario-desc">Wireless mouse, Budget 35 USDC — no transaction when budget is not met.</p>
-              <span className="badge badge-rejected" style={{ fontSize: '0.68rem' }}>
-                <ShieldCheck size={10} /> Budget Protected
+            <Link href="/app?scenario=nodeal" className="glass-card" style={{ display: 'block', textDecoration: 'none' }}>
+              <div className="mono" style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>SCENARIO 03</div>
+              <h3 className="font-viga" style={{ fontSize: '1.15rem', color: '#fff', marginBottom: '0.3rem' }}>No Deal (Budget Safe)</h3>
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+                Wireless mouse (Budget 35 USDC). Vendors reject low offer, protecting user budget.
+              </p>
+              <span className="badge badge-rejected" style={{ fontSize: '0.7rem' }}>
+                <ShieldCheck size={11} /> Budget Protected
               </span>
             </Link>
           </div>
-        </div>
-      </section>
-
-      {/* ─── Final CTA ─── */}
-      <section style={{ padding: 'var(--space-4xl) 0', textAlign: 'center' }}>
-        <div className="container">
-          <h2 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: 'var(--space-md)' }}>
-            Ready to let the agent negotiate for you?
-          </h2>
-          <p style={{ fontSize: '1rem', color: 'var(--text-secondary)', marginBottom: 'var(--space-xl)', maxWidth: '480px', margin: '0 auto var(--space-xl)' }}>
-            Open the workspace, set your budget, and watch it work.
-          </p>
-          <Link href="/app" className="btn btn-primary hero-cta-primary">
-            Open AgenBelanja Workspace <ArrowRight size={16} />
-          </Link>
         </div>
       </section>
 
       {/* ─── Footer ─── */}
-      <footer className="landing-footer">
-        <div className="container">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 'var(--space-md)' }}>
-            <div>
-              <div className="wordmark" style={{ marginBottom: '0.25rem', fontSize: '0.95rem' }}>
-                <span className="wordmark-icon" style={{ width: 22, height: 22 }}><Zap size={11} /></span>
-                AgenBelanja
-              </div>
-              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Agentic Commerce on Monad</p>
+      <footer style={{ borderTop: '1px solid var(--border-subtle)', padding: '2.5rem 0', background: 'var(--bg-base)' }}>
+        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+          <div>
+            <div className="wordmark" style={{ fontSize: '1.1rem', marginBottom: '0.2rem' }}>
+              <span className="wordmark-icon" style={{ width: 24, height: 24 }}><Zap size={13} /></span>
+              AgenBelanja
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-lg)' }}>
-              <Link href="/app" style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>Workspace</Link>
-              <a href="#how-it-works" style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>How It Works</a>
-              <a href="https://github.com/Luthfi-1012/Haccathon-Monad-Agenbelanja" target="_blank" rel="noreferrer" style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>GitHub</a>
-            </div>
+            <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Parallel Agentic Commerce on Monad</p>
           </div>
-          <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: 'var(--space-lg)', textAlign: 'center' }}>
-            Hackathon demo — uses simulated vendor data.
-          </p>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            <Link href="/app" style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Workspace</Link>
+            <a href="https://github.com/Luthfi-1012/Haccathon-Monad-Agenbelanja" target="_blank" rel="noreferrer" style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600 }}>GitHub</a>
+          </div>
         </div>
       </footer>
     </>

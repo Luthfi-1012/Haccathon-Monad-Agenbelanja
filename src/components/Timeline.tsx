@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import { Activity, Bot, Store, CheckCircle, AlertTriangle, FileText } from 'lucide-react';
+import { Activity, Bot, Store, CheckCircle2, AlertTriangle, FileText } from 'lucide-react';
 import { NegotiationEvent } from '../types/negotiation';
 import gsap from 'gsap';
 
@@ -24,10 +24,10 @@ export const Timeline: React.FC<TimelineProps> = ({ timeline }) => {
 
   if (!timeline || timeline.length === 0) {
     return (
-      <div className="glass-card" style={{ padding: 'var(--space-lg)', textAlign: 'center' }}>
-        <FileText size={18} style={{ opacity: 0.3, marginBottom: '0.3rem' }} />
-        <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-          Enter a request to start the negotiation — every step will appear here.
+      <div className="glass-card" style={{ padding: '1.5rem', textAlign: 'center' }}>
+        <FileText size={20} color="var(--primary)" style={{ opacity: 0.5, marginBottom: '0.4rem' }} />
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+          Real-time agent log will populate here once negotiation is initiated.
         </p>
       </div>
     );
@@ -35,39 +35,33 @@ export const Timeline: React.FC<TimelineProps> = ({ timeline }) => {
 
   const getIcon = (actor: NegotiationEvent['actor'], eventType: NegotiationEvent['eventType']) => {
     if (eventType === 'NO_DEAL' || eventType === 'SETTLEMENT_FAILED')
-      return <AlertTriangle size={13} color="var(--danger)" />;
+      return <AlertTriangle size={14} color="var(--danger)" />;
     if (eventType === 'VENDOR_SELECTED' || eventType === 'SETTLEMENT_SUCCESS')
-      return <CheckCircle size={13} color="var(--success)" />;
-    if (actor === 'agent') return <Bot size={13} color="var(--primary)" />;
-    if (actor === 'system') return <Activity size={13} color="var(--text-secondary)" />;
-    return <Store size={13} color="var(--accent-cyan)" />;
-  };
-
-  const getActorLabel = (actor: NegotiationEvent['actor']) => {
-    if (actor === 'agent') return 'Agent';
-    if (actor === 'system') return 'System';
-    return actor.toUpperCase();
+      return <CheckCircle2 size={14} color="var(--success)" />;
+    if (actor === 'agent') return <Bot size={14} color="var(--primary)" />;
+    if (actor === 'system') return <Activity size={14} color="var(--text-secondary)" />;
+    return <Store size={14} color="var(--primary)" />;
   };
 
   return (
-    <div className="glass-card" style={{ padding: 'var(--space-md) var(--space-lg)' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--space-md)' }}>
-        <h3 style={{ fontSize: '0.92rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-          <Activity size={15} color="var(--primary)" /> Agent Decision Trail
+    <div className="glass-card" style={{ padding: '1.25rem 1.5rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+        <h3 className="font-viga" style={{ fontSize: '1.05rem', color: '#ffffff', display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+          <Activity size={16} color="var(--primary)" /> Execution Audit Log
         </h3>
-        <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>
+        <span className="mono" style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
           {timeline.length} events
         </span>
       </div>
 
       <div ref={listRef} style={{
-        display: 'flex', flexDirection: 'column', gap: '0.25rem',
+        display: 'flex', flexDirection: 'column', gap: '0.35rem',
         maxHeight: '400px', overflowY: 'auto', paddingRight: '0.25rem',
         position: 'relative',
       }}>
-        {/* Vertical connector line */}
+        {/* Vertical Line */}
         <div style={{
-          position: 'absolute', left: '16px', top: '12px', bottom: '12px',
+          position: 'absolute', left: '17px', top: '14px', bottom: '14px',
           width: '1px', background: 'var(--border-subtle)', zIndex: 0,
         }} />
 
@@ -76,16 +70,15 @@ export const Timeline: React.FC<TimelineProps> = ({ timeline }) => {
             key={event.eventId}
             className="tl-event"
             style={{
-              display: 'flex', alignItems: 'flex-start', gap: '0.6rem',
-              padding: '0.5rem 0.6rem', position: 'relative', zIndex: 1,
+              display: 'flex', alignItems: 'flex-start', gap: '0.7rem',
+              padding: '0.55rem 0.65rem', position: 'relative', zIndex: 1,
               borderRadius: 'var(--radius-sm)',
-              transition: 'background 150ms ease',
+              background: 'var(--bg-recessed)',
+              border: '1px solid var(--border-subtle)',
             }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'var(--bg-elevated)'; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
           >
             <div style={{
-              width: 26, height: 26, borderRadius: '50%',
+              width: 28, height: 28, borderRadius: '50%',
               background: 'var(--bg-surface)', border: '1px solid var(--border-default)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               flexShrink: 0, marginTop: '0.05rem',
@@ -94,15 +87,15 @@ export const Timeline: React.FC<TimelineProps> = ({ timeline }) => {
             </div>
 
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.4rem', marginBottom: '0.1rem' }}>
-                <span style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                  {getActorLabel(event.actor)}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', marginBottom: '0.15rem' }}>
+                <span className="font-viga" style={{ fontSize: '0.75rem', color: 'var(--primary)', textTransform: 'uppercase' }}>
+                  {event.actor === 'agent' ? 'AGENT' : event.actor === 'system' ? 'SYSTEM' : event.actor.toUpperCase()}
                 </span>
-                <span className="mono" style={{ fontSize: '0.62rem', color: 'var(--text-muted)', flexShrink: 0 }}>
+                <span className="mono" style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>
                   #{event.sequenceNumber} · {new Date(event.timestamp).toLocaleTimeString()}
                 </span>
               </div>
-              <p style={{ fontSize: '0.8rem', color: 'var(--text-primary)', lineHeight: 1.5 }}>{event.message}</p>
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-primary)', lineHeight: 1.5 }}>{event.message}</p>
             </div>
           </div>
         ))}

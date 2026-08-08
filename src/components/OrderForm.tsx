@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ArrowRight, RefreshCw, ShoppingCart, DollarSign, AlertCircle, ShieldCheck } from 'lucide-react';
+import { ArrowRight, RefreshCw, ShoppingCart, DollarSign, AlertCircle, ShieldCheck, Sparkles } from 'lucide-react';
 import { ScenarioPreset } from '../lib/vendorSimulator';
 
 interface OrderFormProps {
@@ -25,7 +25,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({
   const presets: { id: ScenarioPreset; label: string; item: string; budget: number }[] = [
     { id: 'scenario_1', label: 'Direct Match', item: 'Mechanical keyboard', budget: 50 },
     { id: 'scenario_2', label: 'Negotiated Deal', item: 'Gaming headset', budget: 50 },
-    { id: 'scenario_3', label: 'No Deal', item: 'Wireless mouse', budget: 35 },
+    { id: 'scenario_3', label: 'No Deal (Budget Safe)', item: 'Wireless mouse', budget: 35 },
   ];
 
   const handlePresetSelect = (preset: typeof presets[0]) => {
@@ -45,11 +45,21 @@ export const OrderForm: React.FC<OrderFormProps> = ({
   };
 
   return (
-    <div className="glass-card" style={{ padding: 'var(--space-lg)', marginBottom: 'var(--space-lg)' }}>
-      {/* Scenario Presets */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: 'var(--space-lg)', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', marginRight: '0.25rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-          Presets
+    <div className="glass-card" style={{ padding: '1.5rem', marginBottom: '1.5rem' }}>
+      {/* Title */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+        <h3 className="font-viga" style={{ fontSize: '1.15rem', color: '#ffffff', display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+          <Sparkles size={16} color="var(--primary)" /> Request Composer
+        </h3>
+        <span className="chip" style={{ fontSize: '0.72rem' }}>
+          Autonomous Agent Setup
+        </span>
+      </div>
+
+      {/* Preset Pills */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
+        <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginRight: '0.2rem' }}>
+          Presets:
         </span>
         {presets.map((p) => (
           <button
@@ -59,10 +69,10 @@ export const OrderForm: React.FC<OrderFormProps> = ({
             onClick={() => handlePresetSelect(p)}
             style={{
               cursor: 'pointer',
-              background: selectedScenario === p.id ? 'var(--primary-subtle)' : undefined,
-              color: selectedScenario === p.id ? 'var(--primary)' : undefined,
-              borderColor: selectedScenario === p.id ? 'rgba(131,110,249,0.25)' : undefined,
-              transition: 'all 150ms ease',
+              background: selectedScenario === p.id ? 'var(--primary-subtle)' : 'var(--surface-translucent)',
+              color: selectedScenario === p.id ? '#a594fd' : 'var(--text-secondary)',
+              borderColor: selectedScenario === p.id ? 'var(--primary)' : 'var(--border-subtle)',
+              fontWeight: selectedScenario === p.id ? 700 : 500,
             }}
           >
             {p.label}
@@ -70,44 +80,44 @@ export const OrderForm: React.FC<OrderFormProps> = ({
         ))}
       </div>
 
-      {/* Error */}
+      {/* Error Message */}
       {errorMsg && (
         <div style={{
           display: 'flex', alignItems: 'center', gap: '0.5rem',
-          padding: '0.55rem 0.85rem', background: 'var(--danger-subtle)',
-          border: '1px solid rgba(239,68,68,0.2)', borderRadius: 'var(--radius-sm)',
-          color: '#fca5a5', fontSize: '0.8rem', marginBottom: 'var(--space-md)',
+          padding: '0.6rem 0.85rem', background: 'var(--danger-subtle)',
+          border: '1px solid rgba(239,68,68,0.25)', borderRadius: 'var(--radius-sm)',
+          color: '#fca5a5', fontSize: '0.82rem', marginBottom: '1rem',
         }}>
-          <AlertCircle size={14} /> {errorMsg}
+          <AlertCircle size={15} /> {errorMsg}
         </div>
       )}
 
-      {/* Form */}
+      {/* Form Controls */}
       <form onSubmit={handleSubmit}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 200px', gap: 'var(--space-md)', marginBottom: 'var(--space-md)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 220px', gap: '1rem', marginBottom: '1.25rem' }}>
           <div className="form-group">
-            <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-              <ShoppingCart size={12} color="var(--primary)" /> What do you want to buy?
+            <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+              <ShoppingCart size={13} color="var(--primary)" /> Product Description
             </label>
             <input
               type="text"
               className="form-input"
               value={itemDescription}
               onChange={(e) => { setItemDescription(e.target.value); if (errorMsg) setErrorMsg(null); }}
-              placeholder="e.g. Gaming headset for online meetings"
+              placeholder="e.g. Mechanical gaming keyboard"
               disabled={isLoading}
             />
           </div>
 
           <div className="form-group">
-            <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-              <DollarSign size={12} color="var(--success)" /> Max Budget
+            <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+              <DollarSign size={13} color="var(--primary)" /> Max Budget (USDC)
             </label>
             <div style={{ position: 'relative' }}>
               <input
                 type="number"
                 className="form-input mono"
-                style={{ paddingRight: '3.5rem', width: '100%' }}
+                style={{ paddingRight: '4rem', width: '100%', fontSize: '1rem', fontWeight: 700, color: 'var(--primary)' }}
                 value={budgetAmount || ''}
                 onChange={(e) => {
                   const val = Number(e.target.value);
@@ -119,9 +129,9 @@ export const OrderForm: React.FC<OrderFormProps> = ({
                 min={1}
                 disabled={isLoading}
               />
-              <span style={{
-                position: 'absolute', right: '0.75rem', top: '50%', transform: 'translateY(-50%)',
-                fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-muted)', pointerEvents: 'none',
+              <span className="mono" style={{
+                position: 'absolute', right: '0.85rem', top: '50%', transform: 'translateY(-50%)',
+                fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', pointerEvents: 'none',
               }}>
                 USDC
               </span>
@@ -129,20 +139,21 @@ export const OrderForm: React.FC<OrderFormProps> = ({
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-md)' }}>
+        {/* Buttons */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
           <button
             type="submit"
             className="btn btn-primary"
             disabled={isLoading}
-            style={{ flex: 1, padding: '0.75rem', fontSize: '0.88rem', borderRadius: 'var(--radius-md)' }}
+            style={{ flex: 1, padding: '0.8rem', fontSize: '0.92rem', borderRadius: 'var(--radius-sm)' }}
           >
             {isLoading ? (
               <>
-                <RefreshCw size={15} style={{ animation: 'spin 1s linear infinite' }} /> Processing Parallel Quotes…
+                <RefreshCw size={16} style={{ animation: 'spin 1s linear infinite' }} /> Processing Agent Negotiation…
               </>
             ) : (
               <>
-                Run Parallel Negotiation <ArrowRight size={15} />
+                Execute Parallel Negotiation <ArrowRight size={16} />
               </>
             )}
           </button>
@@ -152,16 +163,16 @@ export const OrderForm: React.FC<OrderFormProps> = ({
             className="btn btn-secondary"
             onClick={onReset}
             disabled={isLoading}
-            style={{ padding: '0.75rem 1rem', fontSize: '0.82rem' }}
+            style={{ padding: '0.8rem 1.25rem', fontSize: '0.85rem' }}
           >
             Reset
           </button>
         </div>
 
-        {/* Helper */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', marginTop: 'var(--space-sm)', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-          <ShieldCheck size={12} color="var(--success)" />
-          Agent will never submit an offer above your budget.
+        {/* Safeguard Hint */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.75rem', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+          <ShieldCheck size={13} color="var(--primary)" />
+          Agent rule engine automatically prevents offers above your {budgetAmount || 50} USDC budget limit.
         </div>
       </form>
     </div>

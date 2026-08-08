@@ -154,7 +154,7 @@ function WorkspaceContent() {
             Autonomous Procurement Agent
           </span>
         </div>
-        <h2 style={{ fontSize: '1.35rem', fontWeight: 800, marginBottom: '0.35rem' }}>
+        <h2 className="font-viga" style={{ fontSize: '1.6rem', color: '#ffffff', marginBottom: '0.4rem' }}>
           Find the best deal without exceeding your budget.
         </h2>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-md)', flexWrap: 'wrap' }}>
