@@ -11,6 +11,7 @@ interface WalletContextType {
   isConnected: boolean;
   isWrongNetwork: boolean;
   connectWallet: () => Promise<void>;
+  disconnectWallet: () => void;
   switchNetwork: () => Promise<void>;
 }
 
@@ -20,6 +21,7 @@ const WalletContext = createContext<WalletContextType>({
   isConnected: false,
   isWrongNetwork: false,
   connectWallet: async () => {},
+  disconnectWallet: () => {},
   switchNetwork: async () => {},
 });
 
@@ -146,6 +148,11 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     }
   };
 
+  const disconnectWallet = () => {
+    setAddress(null);
+    setChainId(null);
+  };
+
   return (
     <WalletContext.Provider
       value={{
@@ -154,6 +161,7 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         isConnected,
         isWrongNetwork,
         connectWallet,
+        disconnectWallet,
         switchNetwork,
       }}
     >

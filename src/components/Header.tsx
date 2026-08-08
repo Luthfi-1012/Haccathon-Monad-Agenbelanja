@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
-import { ShoppingBag, Wallet, CheckCircle2, RefreshCw, AlertTriangle } from 'lucide-react';
+import React, { useState } from 'react';
+import { ShoppingBag, Wallet, CheckCircle2, RefreshCw, AlertTriangle, LogOut } from 'lucide-react';
 import { useWallet } from '@/context/WalletContext';
 
 interface HeaderProps {
@@ -9,7 +9,8 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ onResetDemo }) => {
-  const { address, isConnected, isWrongNetwork, connectWallet, switchNetwork } = useWallet();
+  const { address, isConnected, isWrongNetwork, connectWallet, disconnectWallet, switchNetwork } = useWallet();
+  const [showDisconnectConfirm, setShowDisconnectConfirm] = useState(false);
 
   const shortenedAddress = address ? `${address.substring(0, 6)}...${address.substring(address.length - 4)}` : '';
 
@@ -18,7 +19,14 @@ export const Header: React.FC<HeaderProps> = ({ onResetDemo }) => {
       switchNetwork();
     } else if (!isConnected) {
       connectWallet();
+    } else {
+      setShowDisconnectConfirm((prev) => !prev);
     }
+  };
+
+  const handleConfirmDisconnect = () => {
+    disconnectWallet();
+    setShowDisconnectConfirm(false);
   };
 
   return (
@@ -56,7 +64,7 @@ export const Header: React.FC<HeaderProps> = ({ onResetDemo }) => {
         </div>
 
         {/* Network & Wallet Status Pills */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', position: 'relative' }}>
           <div
             style={{
               display: 'flex',
@@ -75,39 +83,75 @@ export const Header: React.FC<HeaderProps> = ({ onResetDemo }) => {
             Monad Testnet <span className="mono" style={{ color: 'var(--text-muted)' }}>(10143)</span>
           </div>
 
-          <button
-            className="btn btn-secondary"
-            onClick={handleWalletClick}
-            style={{
-              padding: '0.35rem 0.75rem',
-              fontSize: '0.75rem',
-              borderRadius: '0.375rem',
-              borderColor: isWrongNetwork ? 'var(--danger-red)' : undefined,
-            }}
-            title={isConnected ? 'Wallet Connected' : 'Connect MetaMask Wallet'}
-          >
-            <Wallet size={13} color={isConnected ? (isWrongNetwork ? 'var(--danger-red)' : 'var(--success-green)') : 'var(--text-muted)'} />
-            {isConnected ? (
-              isWrongNetwork ? (
-                <span style={{ color: 'var(--danger-red)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                  <AlertTriangle size={12} /> Switch to Monad
-                </span>
+          <div style={{ position: 'relative' }}>
+            <button
+              className="btn btn-secondary"
+              onClick={handleWalletClick}
+              style={{
+                padding: '0.35rem 0.75rem',
+                fontSize: '0.75rem',
+                borderRadius: '0.375rem',
+                borderColor: isWrongNetwork ? 'var(--danger-red)' : undefined,
+              }}
+              title={isConnected ? 'Klik untuk opsi Disconnect Wallet' : 'Connect MetaMask Wallet'}
+            >
+              <Wallet size={13} color={isConnected ? (isWrongNetwork ? 'var(--danger-red)' : 'var(--success-green)') : 'var(--text-muted)'} />
+              {isConnected ? (
+                isWrongNetwork ? (
+                  <span style={{ color: 'var(--danger-red)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                    <AlertTriangle size={12} /> Switch to Monad
+                  </span>
+                ) : (
+                  <span className="mono" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: 'var(--text-primary)' }}>
+                    <CheckCircle2 size={12} color="var(--success-green)" /> {shortenedAddress}
+                  </span>
+                )
               ) : (
-                <span className="mono" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: 'var(--text-primary)' }}>
-                  <CheckCircle2 size={12} color="var(--success-green)" /> {shortenedAddress}
-                </span>
-              )
-            ) : (
-              <span>Connect Wallet</span>
+                <span>Connect Wallet</span>
+              )}
+            </button>
+
+            {/* Disconnect Dropdown */}
+            {showDisconnectConfirm && isConnected && (
+              <div
+                style={{
+                  position: 'absolute',
+                  right: 0,
+                  top: '120%',
+                  background: '#121520',
+                  border: '1px solid var(--border-strong)',
+                  borderRadius: '0.375rem',
+                  padding: '0.5rem',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.5)',
+                  zIndex: 50,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                <button
+                  className="btn"
+                  onClick={handleConfirmDisconnect}
+                  style={{
+                    padding: '0.35rem 0.65rem',
+                    fontSize: '0.75rem',
+                    color: 'var(--danger-red)',
+                    background: 'var(--danger-red-subtle)',
+                    border: '1px solid rgba(239, 68, 68, 0.3)',
+                    borderRadius: '0.25rem',
+                    width: '100%',
+                  }}
+                >
+                  <LogOut size={12} /> Disconnect Wallet
+                </button>
+              </div>
             )}
-          </button>
+          </div>
 
           {onResetDemo && (
             <button
               className="btn btn-secondary"
               onClick={onResetDemo}
               style={{ padding: '0.35rem 0.65rem', fontSize: '0.75rem', borderRadius: '0.375rem' }}
-              title="Reset Demo State"
+              title="Reset Demo State (Mengosongkan simulasi negosiasi)"
             >
               <RefreshCw size={12} /> Reset
             </button>
