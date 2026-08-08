@@ -87,6 +87,24 @@ export const ArenaCard: React.FC<ArenaCardProps> = ({ order, onResetDemo, onSett
 
       const userAccount = address as `0x${string}`;
 
+      // Check USDC balance first to prevent silent revert
+      try {
+        const usdcBalance = await publicClient.readContract({
+          address: USDC_ADDRESS,
+          abi: ERC20_ABI,
+          functionName: 'balanceOf',
+          args: [userAccount],
+        });
+
+        if (usdcBalance < budgetUnits) {
+          setErrorMsg(`Saldo USDC Testnet Anda (${Number(usdcBalance) / 1e6} USDC) tidak mencukupi untuk escrow ${order.budgetAmount} USDC. Silakan gunakan faucet Monad USDC.`);
+          setStatus('IDLE');
+          return;
+        }
+      } catch (balErr) {
+        console.warn('Could not read USDC balance:', balErr);
+      }
+
       // Check allowance
       const allowance = await publicClient.readContract({
         address: USDC_ADDRESS,
@@ -103,7 +121,10 @@ export const ArenaCard: React.FC<ArenaCardProps> = ({ order, onResetDemo, onSett
           functionName: 'approve',
           args: [ARENA_ADDRESS, budgetUnits],
         });
-        await publicClient.waitForTransactionReceipt({ hash: approveHash });
+        const approveReceipt = await publicClient.waitForTransactionReceipt({ hash: approveHash });
+        if (approveReceipt.status === 'reverted') {
+          throw new Error('Transaksi Approve USDC di-revert oleh blockchain.');
+        }
       }
 
       setStatus('CREATING');
@@ -120,6 +141,10 @@ export const ArenaCard: React.FC<ArenaCardProps> = ({ order, onResetDemo, onSett
 
       setCreateTxHash(createHash);
       const receipt = await publicClient.waitForTransactionReceipt({ hash: createHash });
+
+      if (receipt.status === 'reverted') {
+        throw new Error('Transaksi createAuction di-revert oleh smart contract Monad. Pastikan saldo USDC Testnet mencukupi.');
+      }
 
       // Retrieve new auction ID safely directly from event logs
       let currentAuctionId = 0;
@@ -179,7 +204,7 @@ export const ArenaCard: React.FC<ArenaCardProps> = ({ order, onResetDemo, onSett
     } catch (err: any) {
       console.error('Error creating auction:', err);
       if (err?.message?.includes('User denied') || err?.code === 4001) {
-        setErrorMsg('Transaksi dibatalkan oleh pengguna.');
+        setErrorMsg('Transaksi dibatalkan oleh pengguna di MetaMask.');
       } else {
         setErrorMsg(err?.message || 'Gagal membuka lelang Arena On-Chain.');
       }
@@ -217,12 +242,20 @@ export const ArenaCard: React.FC<ArenaCardProps> = ({ order, onResetDemo, onSett
       });
 
       setSettleTxHash(hash);
-      await publicClient.waitForTransactionReceipt({ hash });
+      const receipt = await publicClient.waitForTransactionReceipt({ hash });
+
+      if (receipt.status === 'reverted') {
+        throw new Error('Settlement di-revert oleh smart contract (Waktu lelang mungkin masih berjalan / BiddingStillOpen).');
+      }
 
       setStatus('SETTLED');
     } catch (err: any) {
       console.error('Error settling auction:', err);
-      setErrorMsg(err?.message || 'Gagal mengeksekusi settlement on-chain.');
+      if (err?.message?.includes('User denied') || err?.code === 4001) {
+        setErrorMsg('Transaksi settlement dibatalkan oleh pengguna di MetaMask.');
+      } else {
+        setErrorMsg(err?.message || 'Gagal mengeksekusi settlement on-chain.');
+      }
       setStatus('READY_SETTLE');
     }
   };
