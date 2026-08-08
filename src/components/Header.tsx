@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Zap, Wallet, CheckCircle2, AlertTriangle, LogOut, ShieldCheck, RefreshCw } from 'lucide-react';
+import { Wallet, CheckCircle2, AlertTriangle, LogOut, ShieldCheck, RefreshCw } from 'lucide-react';
+import Link from 'next/link';
 import { useWallet } from '@/context/WalletContext';
 
 interface HeaderProps {
@@ -32,41 +33,26 @@ export const Header: React.FC<HeaderProps> = ({ onResetDemo, arenaMode, onToggle
       flexWrap: 'wrap',
       gap: '0.85rem',
     }}>
-      {/* Brand Identity with Viga Font */}
+      {/* Brand Identity with Minimalist Logo (No AI-slop Box) */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-        <div style={{
-          width: 34, height: 34, borderRadius: '0.5rem',
-          background: 'var(--primary)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff',
-          boxShadow: '0 0 15px rgba(131, 110, 249, 0.4)',
-        }}>
-          <Zap size={18} />
-        </div>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-            <span className="font-viga" style={{ fontSize: '1.15rem', color: '#ffffff', letterSpacing: '0.01em' }}>
-              AgenBelanja
-            </span>
-            <span className="chip" style={{ fontSize: '0.68rem', padding: '0.15rem 0.55rem', background: 'var(--primary-subtle)', color: '#a594fd', borderColor: 'var(--border-default)' }}>
-              Workspace
-            </span>
-          </div>
-          <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-            Parallel Agentic Commerce Protocol
-          </p>
-        </div>
+        <Link href="/" className="wordmark-minimal">
+          <span>AgenBelanja</span>
+          <span className="brand-dot">.</span>
+        </Link>
+        <span className="chip" style={{ fontSize: '0.68rem', padding: '0.15rem 0.55rem', background: 'var(--primary-subtle)', color: '#a594fd', borderColor: 'var(--border-default)' }}>
+          Workspace
+        </span>
       </div>
 
-      {/* Controls with Lucide Icons & 2-Color styling */}
+      {/* Controls with Lucide Icons */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
         {/* Arena Mode Toggle */}
         <button
           className="btn"
           onClick={onToggleArenaMode}
           style={{
-            padding: '0.4rem 0.75rem',
+            padding: '0.4rem 0.85rem',
             fontSize: '0.75rem',
-            borderRadius: 'var(--radius-sm)',
             background: arenaMode ? 'var(--primary-subtle)' : 'var(--surface-translucent)',
             color: arenaMode ? '#a594fd' : 'var(--text-secondary)',
             border: `1px solid ${arenaMode ? 'var(--primary)' : 'var(--border-subtle)'}`,
@@ -79,7 +65,7 @@ export const Header: React.FC<HeaderProps> = ({ onResetDemo, arenaMode, onToggle
         </button>
 
         {/* Network Pill */}
-        <div className="chip" style={{ fontSize: '0.75rem', padding: '0.4rem 0.75rem' }}>
+        <div className="chip" style={{ fontSize: '0.75rem', padding: '0.4rem 0.85rem' }}>
           <span style={{ width: 6, height: 6, borderRadius: '50%', background: isWrongNetwork ? 'var(--danger)' : 'var(--primary)', boxShadow: '0 0 6px var(--primary)' }} />
           Monad <span className="mono" style={{ color: 'var(--text-muted)' }}>10143</span>
         </div>
@@ -89,7 +75,7 @@ export const Header: React.FC<HeaderProps> = ({ onResetDemo, arenaMode, onToggle
           <button
             className="btn btn-secondary"
             onClick={handleWalletClick}
-            style={{ padding: '0.4rem 0.75rem', fontSize: '0.75rem', borderRadius: 'var(--radius-sm)' }}
+            style={{ padding: '0.4rem 0.85rem', fontSize: '0.75rem' }}
           >
             <Wallet size={13} color={isConnected ? (isWrongNetwork ? 'var(--danger)' : 'var(--primary)') : 'var(--text-muted)'} />
             {isConnected ? (

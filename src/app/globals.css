@@ -1,29 +1,28 @@
 @import url('https://fonts.googleapis.com/css2?family=Viga&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 /* ═══════════════════════════════════════════════════════════
-   DESIGN SYSTEM — AgenBelanja (Strict 2-Color Palette & Viga Font)
-   Primary Accent: Monad Violet (#836ef9)
-   Base Background: Midnight Obsidian (#08090e)
+   DESIGN SYSTEM — AgenBelanja (Ryansyah3r Inspired Aesthetic)
+   Minimalist Editorial Agency · Background Grid · Viga Headings
    ═══════════════════════════════════════════════════════════ */
 
 :root {
   /* 2-COLOR CORE PALETTE */
-  --bg-base: #08090e;
+  --bg-base: #06070a;
   --primary: #836ef9;
 
   /* DERIVED MONOCHROME SURFACES */
-  --bg-surface: #0e1017;
-  --bg-elevated: #141722;
-  --bg-recessed: #05060a;
+  --bg-surface: #0b0d14;
+  --bg-elevated: #111420;
+  --bg-recessed: #040508;
 
   /* DERIVED TRANSPARENT OVERLAYS */
   --surface-translucent: rgba(255, 255, 255, 0.03);
   --surface-translucent-hover: rgba(255, 255, 255, 0.06);
 
   /* BORDERS */
-  --border-subtle: rgba(255, 255, 255, 0.07);
-  --border-default: rgba(131, 110, 249, 0.18);
-  --border-strong: rgba(131, 110, 249, 0.4);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-default: rgba(131, 110, 249, 0.2);
+  --border-strong: rgba(131, 110, 249, 0.45);
 
   /* PRIMARY ACCENT VARIANTS */
   --primary-hover: #725af6;
@@ -34,9 +33,9 @@
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
-  --text-inverse: #08090e;
+  --text-inverse: #06070a;
 
-  /* FUNCTIONAL STATUS (Strict Translucent Monochromatic accents) */
+  /* FUNCTIONAL STATUS ACCENTS */
   --success: #10b981;
   --success-subtle: rgba(16, 185, 129, 0.12);
   --warning: #f59e0b;
@@ -49,11 +48,11 @@
   --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* RADIUS & SPACING */
+  /* RADIUS */
   --radius-sm: 0.5rem;
   --radius-md: 0.875rem;
   --radius-lg: 1.25rem;
-  --radius-xl: 1.75rem;
+  --radius-pill: 9999px;
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 
@@ -82,8 +81,10 @@ html {
 body {
   background-color: var(--bg-base);
   background-image: 
-    radial-gradient(circle at 50% 0%, rgba(131, 110, 249, 0.14) 0%, transparent 55%),
-    radial-gradient(circle at 100% 100%, rgba(131, 110, 249, 0.05) 0%, transparent 40%);
+    linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    radial-gradient(circle at 50% 0%, rgba(131, 110, 249, 0.15) 0%, transparent 60%);
+  background-size: 48px 48px, 48px 48px, 100% 100%;
   background-attachment: fixed;
   color: var(--text-primary);
   font-family: var(--font-body);
@@ -93,10 +94,10 @@ body {
 }
 
 /* ── Typography with Viga Font ─────────── */
-h1, h2, h3, h4, h5, h6, .font-viga, .brand-viga {
+h1, h2, h3, h4, h5, h6, .font-viga {
   font-family: var(--font-heading);
   letter-spacing: 0.01em;
-  line-height: 1.15;
+  line-height: 1.12;
 }
 
 code, pre, .mono {
@@ -119,20 +120,45 @@ a:hover {
   padding: 2rem 1.25rem;
 }
 
-/* ── Artisanal Bespoke Surface Card ─────── */
+/* ── Minimalist Clean Wordmark Logo (No AI-slop Box) ── */
+.wordmark-minimal {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.wordmark-minimal:hover {
+  opacity: 0.9;
+}
+
+.wordmark-minimal .brand-dot {
+  color: var(--primary);
+}
+
+.wordmark-minimal .brand-slash {
+  color: var(--primary);
+  font-weight: 400;
+  margin-left: 0.15rem;
+}
+
+/* ── Artisanal Surface Card ─────── */
 .glass-card {
   background: var(--bg-surface);
-  border: 1px solid var(--border-default);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: 1.5rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(12px);
   transition: all 0.25s var(--ease-out);
 }
 
 .glass-card:hover {
-  border-color: var(--border-strong);
-  box-shadow: 0 8px 30px rgba(131, 110, 249, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  border-color: var(--border-default);
 }
 
 /* ── Bespoke Buttons ────────────────────── */
@@ -144,8 +170,8 @@ a:hover {
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 0.875rem;
-  padding: 0.7rem 1.25rem;
-  border-radius: var(--radius-sm);
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--radius-pill);
   border: 1px solid transparent;
   cursor: pointer;
   transition: all 0.2s var(--ease-out);
@@ -157,13 +183,13 @@ a:hover {
   background: var(--primary);
   color: #ffffff;
   border-color: var(--primary);
-  box-shadow: 0 0 20px rgba(131, 110, 249, 0.35);
+  box-shadow: 0 0 20px rgba(131, 110, 249, 0.3);
 }
 
 .btn-primary:hover:not(:disabled) {
   background: var(--primary-hover);
   border-color: var(--primary-hover);
-  box-shadow: 0 0 30px rgba(131, 110, 249, 0.5);
+  box-shadow: 0 0 28px rgba(131, 110, 249, 0.45);
   transform: translateY(-1px);
 }
 
@@ -211,11 +237,11 @@ a:hover {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.25rem 0.6rem;
-  border-radius: var(--radius-sm);
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-pill);
   font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
@@ -247,8 +273,8 @@ a:hover {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.3rem 0.75rem;
-  border-radius: 999px;
+  padding: 0.3rem 0.8rem;
+  border-radius: var(--radius-pill);
   font-size: 0.75rem;
   font-weight: 600;
   background: var(--surface-translucent);
@@ -264,16 +290,16 @@ a:hover {
 }
 
 .form-label {
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--text-secondary);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
 }
 
 .form-input {
   background: var(--bg-recessed);
-  border: 1px solid var(--border-default);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   padding: 0.75rem 1rem;
   color: var(--text-primary);
@@ -293,44 +319,23 @@ a:hover {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(8, 9, 14, 0.85);
+  background: rgba(6, 7, 10, 0.85);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border-subtle);
   padding: 0.85rem 0;
 }
 
-.wordmark {
-  font-family: var(--font-heading);
-  font-size: 1.25rem;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-}
-
-.wordmark-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 0.5rem;
-  background: var(--primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff;
-  box-shadow: 0 0 15px rgba(131, 110, 249, 0.4);
-}
-
 .hero-headline {
   font-family: var(--font-heading);
-  font-size: clamp(2.25rem, 5.5vw, 3.75rem);
+  font-size: clamp(2.5rem, 6vw, 4rem);
   color: var(--text-primary);
-  line-height: 1.08;
+  line-height: 1.05;
   letter-spacing: -0.01em;
 }
 
 .section-heading {
   font-family: var(--font-heading);
-  font-size: 2rem;
+  font-size: 2.1rem;
   color: var(--text-primary);
 }
 
