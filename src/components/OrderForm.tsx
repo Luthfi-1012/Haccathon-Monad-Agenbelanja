@@ -48,17 +48,17 @@ export const OrderForm: React.FC<OrderFormProps> = ({
     <div className="glass-card" style={{ padding: '1.5rem', marginBottom: '1.5rem' }}>
       {/* Title */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
-        <h3 className="font-viga" style={{ fontSize: '1.15rem', color: '#ffffff', display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-          <Sparkles size={16} color="var(--primary)" /> Request Composer
+        <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#ffffff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <Sparkles size={18} color="var(--primary)" /> Request Composer
         </h3>
-        <span className="chip" style={{ fontSize: '0.72rem' }}>
+        <span className="chip" style={{ fontSize: '0.75rem', padding: '0.3rem 0.75rem' }}>
           Autonomous Agent Setup
         </span>
       </div>
 
       {/* Preset Pills */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginRight: '0.2rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.35rem', flexWrap: 'wrap' }}>
+        <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em', marginRight: '0.2rem' }}>
           Presets:
         </span>
         {presets.map((p) => (
@@ -72,7 +72,8 @@ export const OrderForm: React.FC<OrderFormProps> = ({
               background: selectedScenario === p.id ? 'var(--primary-subtle)' : 'var(--surface-translucent)',
               color: selectedScenario === p.id ? '#a594fd' : 'var(--text-secondary)',
               borderColor: selectedScenario === p.id ? 'var(--primary)' : 'var(--border-subtle)',
-              fontWeight: selectedScenario === p.id ? 700 : 500,
+              fontWeight: selectedScenario === p.id ? 700 : 600,
+              padding: '0.35rem 0.85rem',
             }}
           >
             {p.label}
@@ -84,11 +85,11 @@ export const OrderForm: React.FC<OrderFormProps> = ({
       {errorMsg && (
         <div style={{
           display: 'flex', alignItems: 'center', gap: '0.5rem',
-          padding: '0.6rem 0.85rem', background: 'var(--danger-subtle)',
-          border: '1px solid rgba(239,68,68,0.25)', borderRadius: 'var(--radius-sm)',
-          color: '#fca5a5', fontSize: '0.82rem', marginBottom: '1rem',
+          padding: '0.65rem 0.85rem', background: 'var(--danger-subtle)',
+          border: '1px solid rgba(239,68,68,0.3)', borderRadius: 'var(--radius-sm)',
+          color: '#fca5a5', fontSize: '0.85rem', marginBottom: '1rem',
         }}>
-          <AlertCircle size={15} /> {errorMsg}
+          <AlertCircle size={16} /> {errorMsg}
         </div>
       )}
 
@@ -96,8 +97,8 @@ export const OrderForm: React.FC<OrderFormProps> = ({
       <form onSubmit={handleSubmit}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 220px', gap: '1rem', marginBottom: '1.25rem' }}>
           <div className="form-group">
-            <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-              <ShoppingCart size={13} color="var(--primary)" /> Product Description
+            <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text-secondary)' }}>
+              <ShoppingCart size={14} color="var(--primary)" /> Product Description
             </label>
             <input
               type="text"
@@ -110,8 +111,8 @@ export const OrderForm: React.FC<OrderFormProps> = ({
           </div>
 
           <div className="form-group">
-            <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-              <DollarSign size={13} color="var(--primary)" /> Max Budget (USDC)
+            <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text-secondary)' }}>
+              <DollarSign size={14} color="var(--primary)" /> Max Budget (USDC)
             </label>
             <div style={{ position: 'relative' }}>
               <input
@@ -131,7 +132,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({
               />
               <span className="mono" style={{
                 position: 'absolute', right: '0.85rem', top: '50%', transform: 'translateY(-50%)',
-                fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', pointerEvents: 'none',
+                fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-muted)', pointerEvents: 'none',
               }}>
                 USDC
               </span>
@@ -145,7 +146,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({
             type="submit"
             className="btn btn-primary"
             disabled={isLoading}
-            style={{ flex: 1, padding: '0.8rem', fontSize: '0.92rem', borderRadius: 'var(--radius-sm)' }}
+            style={{ flex: 1, padding: '0.85rem', fontSize: '0.95rem' }}
           >
             {isLoading ? (
               <>
@@ -163,15 +164,15 @@ export const OrderForm: React.FC<OrderFormProps> = ({
             className="btn btn-secondary"
             onClick={onReset}
             disabled={isLoading}
-            style={{ padding: '0.8rem 1.25rem', fontSize: '0.85rem' }}
+            style={{ padding: '0.85rem 1.35rem', fontSize: '0.88rem' }}
           >
             Reset
           </button>
         </div>
 
         {/* Safeguard Hint */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.75rem', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-          <ShieldCheck size={13} color="var(--primary)" />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.85rem', fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+          <ShieldCheck size={14} color="var(--primary)" />
           Agent rule engine automatically prevents offers above your {budgetAmount || 50} USDC budget limit.
         </div>
       </form>

@@ -3,7 +3,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Zap } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { OrderForm } from '@/components/OrderForm';
 import { VendorCards } from '@/components/VendorCards';
@@ -17,7 +17,7 @@ import { processX402Payment } from '@/lib/x402';
 export default function WorkspacePage() {
   return (
     <Suspense fallback={
-      <main className="container" style={{ maxWidth: 1120, paddingTop: 'var(--space-xl)', textAlign: 'center' }}>
+      <main className="container" style={{ maxWidth: 1140, paddingTop: 'var(--space-xl)', textAlign: 'center' }}>
         <div style={{ padding: 'var(--space-2xl)', color: 'var(--text-muted)' }}>Loading workspace…</div>
       </main>
     }>
@@ -46,7 +46,6 @@ function WorkspaceContent() {
 
   const scenarioVendors = SEED_VENDORS[currentScenario];
 
-  // Auto-trigger scenario from landing page URL param
   useEffect(() => {
     if (scenarioParam && !order) {
       const preset = getPresetFromParam(scenarioParam);
@@ -135,10 +134,10 @@ function WorkspaceContent() {
   const status = getStatusLabel();
 
   return (
-    <main className="container" style={{ maxWidth: 1120, paddingTop: 'var(--space-md)' }}>
+    <main className="container" style={{ maxWidth: 1140, paddingTop: '1rem' }}>
       {/* Back link */}
-      <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: 'var(--space-md)', textDecoration: 'none' }}>
-        <ArrowLeft size={13} /> Home
+      <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '1.25rem', textDecoration: 'none' }}>
+        <ArrowLeft size={14} /> Back to Home
       </Link>
 
       <Header
@@ -148,20 +147,20 @@ function WorkspaceContent() {
       />
 
       {/* Workspace Hero */}
-      <div style={{ marginBottom: 'var(--space-xl)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)', marginBottom: '0.3rem' }}>
-          <span style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--primary)' }}>
+      <div style={{ marginBottom: '1.75rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem' }}>
+          <span style={{ fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--primary)' }}>
             Autonomous Procurement Agent
           </span>
         </div>
-        <h2 className="font-viga" style={{ fontSize: '1.6rem', color: '#ffffff', marginBottom: '0.4rem' }}>
+        <h2 style={{ fontSize: '1.65rem', fontWeight: 800, color: '#ffffff', marginBottom: '0.4rem', letterSpacing: '-0.02em' }}>
           Find the best deal without exceeding your budget.
         </h2>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-md)', flexWrap: 'wrap' }}>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+          <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)' }}>
             The agent requests parallel quotes, evaluates vendor responses, and shows every decision in real-time.
           </p>
-          <div className="chip" style={{ flexShrink: 0 }}>
+          <div className="chip" style={{ flexShrink: 0, fontSize: '0.78rem' }}>
             <span style={{ width: 6, height: 6, borderRadius: '50%', background: status.color, animation: isLoading ? 'pulse-dot 1.5s infinite' : 'none' }} />
             {status.text}
           </div>
@@ -182,7 +181,7 @@ function WorkspaceContent() {
         budgetAmount={budget}
       />
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 'var(--space-lg)' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.25rem' }}>
         <div>
           <Timeline timeline={order?.timeline || []} />
         </div>
