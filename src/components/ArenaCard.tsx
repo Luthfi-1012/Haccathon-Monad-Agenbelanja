@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Award, CheckCircle2, ShieldAlert, ExternalLink, Zap, Clock, Lock, RefreshCw, AlertCircle } from 'lucide-react';
 import { Order } from '../types/negotiation';
 import { useWallet } from '@/context/WalletContext';
-import { createWalletClient, createPublicClient, custom, http, keccak256, toHex } from 'viem';
+import { createWalletClient, createPublicClient, custom, http, keccak256, toHex, parseEventLogs } from 'viem';
 import { NEGOSIASI_ARENA_ABI, ERC20_ABI } from '@/lib/abi';
 
 interface ArenaCardProps {
@@ -121,15 +121,35 @@ export const ArenaCard: React.FC<ArenaCardProps> = ({ order, onResetDemo, onSett
       setCreateTxHash(createHash);
       const receipt = await publicClient.waitForTransactionReceipt({ hash: createHash });
 
-      // Retrieve new auction ID from log or contract nextAuctionId - 1
-      const nextId = await publicClient.readContract({
-        address: ARENA_ADDRESS,
-        abi: NEGOSIASI_ARENA_ABI,
-        functionName: 'nextAuctionId',
-      });
-      const currentAuctionId = Number(nextId) - 1;
-      setAuctionId(currentAuctionId);
+      // Retrieve new auction ID safely directly from event logs
+      let currentAuctionId = 0;
+      try {
+        const logs = parseEventLogs({
+          abi: NEGOSIASI_ARENA_ABI,
+          eventName: 'AuctionCreated',
+          logs: receipt.logs,
+        });
 
+        if (logs && logs.length > 0 && logs[0].args && 'auctionId' in logs[0].args) {
+          currentAuctionId = Number(logs[0].args.auctionId);
+        } else {
+          const nextId = await publicClient.readContract({
+            address: ARENA_ADDRESS,
+            abi: NEGOSIASI_ARENA_ABI,
+            functionName: 'nextAuctionId',
+          });
+          currentAuctionId = Math.max(0, Number(nextId) - 1);
+        }
+      } catch (logErr) {
+        const nextId = await publicClient.readContract({
+          address: ARENA_ADDRESS,
+          abi: NEGOSIASI_ARENA_ABI,
+          functionName: 'nextAuctionId',
+        });
+        currentAuctionId = Math.max(0, Number(nextId) - 1);
+      }
+
+      setAuctionId(currentAuctionId);
       setStatus('WAITING_BIDS');
       setTimeLeft(120);
 
@@ -168,7 +188,10 @@ export const ArenaCard: React.FC<ArenaCardProps> = ({ order, onResetDemo, onSett
   };
 
   const handleSettleAuction = async () => {
-    if (auctionId === null) return;
+    if (auctionId === null || auctionId < 0) {
+      setErrorMsg('Auction ID tidak valid.');
+      return;
+    }
     try {
       setErrorMsg(null);
       setStatus('SETTLING');
@@ -270,7 +293,7 @@ export const ArenaCard: React.FC<ArenaCardProps> = ({ order, onResetDemo, onSett
               <div style={{ padding: '0.85rem', background: '#090a0f', borderRadius: '0.375rem', border: '1px solid var(--border-subtle)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
                   <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                    <Clock size={14} color="var(--primary-accent)" /> Arena Lelang Aktif (ID #{auctionId})
+                    <Clock size={14} color="var(--primary-accent)" /> Arena Lelang Aktif (ID #{auctionId ?? 0})
                   </span>
                   <span className="mono" style={{ fontSize: '0.75rem', color: 'var(--primary-accent)' }}>
                     Waktu Sisa: {timeLeft}s
@@ -310,7 +333,7 @@ export const ArenaCard: React.FC<ArenaCardProps> = ({ order, onResetDemo, onSett
                 disabled={status === 'SETTLING'}
                 style={{ width: '100%', padding: '0.75rem', fontSize: '0.85rem' }}
               >
-                <Zap size={16} /> Settle Arena Sekarang (Bayar Vendor & Auto Refund Kembalian)
+                <Zap size={16} /> {status === 'SETTLING' ? 'Memproses Settlement On-Chain...' : 'Settle Arena Sekarang (Bayar Vendor & Auto Refund Kembalian)'}
               </button>
             </div>
           )}
