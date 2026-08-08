@@ -94,6 +94,7 @@ export default function Home() {
         onStartNegotiation={handleStartNegotiation}
         isLoading={isLoading}
         onReset={handleReset}
+        onBudgetChange={(b) => setBudget(b)}
       />
 
       <VendorCards

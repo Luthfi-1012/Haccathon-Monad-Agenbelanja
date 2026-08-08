@@ -9,12 +9,14 @@ interface OrderFormProps {
   onStartNegotiation: (item: string, budget: number, scenarioId: ScenarioPreset) => void;
   isLoading: boolean;
   onReset: () => void;
+  onBudgetChange?: (budget: number) => void;
 }
 
 export const OrderForm: React.FC<OrderFormProps> = ({
   onStartNegotiation,
   isLoading,
   onReset,
+  onBudgetChange,
 }) => {
   const [itemDescription, setItemDescription] = useState('Headset gaming');
   const [budgetAmount, setBudgetAmount] = useState<number>(50);
@@ -24,16 +26,19 @@ export const OrderForm: React.FC<OrderFormProps> = ({
   const handlePresetSelect = (preset: ScenarioPreset) => {
     setSelectedScenario(preset);
     setErrorMsg(null);
+    let newBudget = 50;
     if (preset === 'scenario_1') {
       setItemDescription('Keyboard mekanikal');
-      setBudgetAmount(50);
+      newBudget = 50;
     } else if (preset === 'scenario_2') {
       setItemDescription('Headset gaming');
-      setBudgetAmount(50);
+      newBudget = 50;
     } else if (preset === 'scenario_3') {
       setItemDescription('Mouse wireless');
-      setBudgetAmount(35);
+      newBudget = 35;
     }
+    setBudgetAmount(newBudget);
+    if (onBudgetChange) onBudgetChange(newBudget);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -148,9 +153,11 @@ export const OrderForm: React.FC<OrderFormProps> = ({
             <input
               type="number"
               className="form-input mono"
-              value={budgetAmount}
+              value={budgetAmount || ''}
               onChange={(e) => {
-                setBudgetAmount(Number(e.target.value));
+                const val = Number(e.target.value);
+                setBudgetAmount(val);
+                if (onBudgetChange) onBudgetChange(val);
                 if (errorMsg) setErrorMsg(null);
               }}
               placeholder="50"

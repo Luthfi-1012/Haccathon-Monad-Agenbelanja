@@ -36,7 +36,7 @@ export const VendorCards: React.FC<VendorCardsProps> = ({
         }
       );
     }
-  }, [vendors, selectedVendorId]);
+  }, [vendors, selectedVendorId, budgetAmount]);
 
   const getStatusBadge = (vendorId: VendorId) => {
     if (selectedVendorId === vendorId) {
@@ -103,6 +103,12 @@ export const VendorCards: React.FC<VendorCardsProps> = ({
       <div ref={containerRef} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '0.85rem' }}>
         {vendorList.map((vendor) => {
           const isSelected = selectedVendorId === vendor.vendorId;
+          const vState = vendors ? vendors[vendor.vendorId] : undefined;
+
+          // Dynamically scale displayed initial quote relative to user's current budgetAmount
+          const displayedInitialQuote = vState?.initialPrice
+            ? vState.initialPrice
+            : Math.max(1, Math.round(budgetAmount * (vendor.initialPrice / 50)));
 
           return (
             <div
@@ -131,8 +137,8 @@ export const VendorCards: React.FC<VendorCardsProps> = ({
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', fontSize: '0.825rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.45rem 0.65rem', background: '#090a0f', borderRadius: '0.375rem', border: '1px solid var(--border-subtle)' }}>
                   <span style={{ color: 'var(--text-secondary)' }}>Initial Quote:</span>
-                  <span className="mono" style={{ fontWeight: 700, color: vendor.initialPrice <= budgetAmount ? 'var(--success-green)' : 'var(--text-primary)' }}>
-                    {vendor.initialPrice} USDC
+                  <span className="mono" style={{ fontWeight: 700, color: displayedInitialQuote <= budgetAmount ? 'var(--success-green)' : 'var(--text-primary)' }}>
+                    {displayedInitialQuote} USDC
                   </span>
                 </div>
 
