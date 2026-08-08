@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ArrowRight, RefreshCw, ShoppingCart, DollarSign, AlertCircle, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowRight, RefreshCw, ShoppingCart, DollarSign, AlertCircle, ShieldCheck, Sparkles, Tag } from 'lucide-react';
+import Image from 'next/image';
 import { ScenarioPreset } from '../lib/vendorSimulator';
 
 interface OrderFormProps {
@@ -22,11 +23,24 @@ export const OrderForm: React.FC<OrderFormProps> = ({
   const [selectedScenario, setSelectedScenario] = useState<ScenarioPreset>('scenario_2');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const presets: { id: ScenarioPreset; label: string; item: string; budget: number }[] = [
-    { id: 'scenario_1', label: 'Direct Match', item: 'Mechanical keyboard', budget: 50 },
-    { id: 'scenario_2', label: 'Negotiated Deal', item: 'Gaming headset', budget: 50 },
-    { id: 'scenario_3', label: 'No Deal (Budget Safe)', item: 'Wireless mouse', budget: 35 },
+  const presets: { id: ScenarioPreset; label: string; item: string; budget: number; category: string }[] = [
+    { id: 'scenario_1', label: 'Direct Match (Keyboard)', item: 'Mechanical keyboard', budget: 50, category: 'keyboard' },
+    { id: 'scenario_2', label: 'Negotiated Deal (Headset)', item: 'Gaming headset', budget: 50, category: 'headset' },
+    { id: 'scenario_3', label: 'No Deal (Mouse)', item: 'Wireless mouse', budget: 35, category: 'mouse' },
   ];
+
+  const getProductImageInfo = (text: string) => {
+    const lower = text.toLowerCase();
+    if (lower.includes('keyboard')) {
+      return { src: '/products/keyboard.png', title: 'Mechanical Keyboard', badge: 'Keyboard Category' };
+    }
+    if (lower.includes('mouse')) {
+      return { src: '/products/mouse.png', title: 'Wireless Mouse', badge: 'Mouse Category' };
+    }
+    return { src: '/products/headset.png', title: 'Gaming Headset', badge: 'Headset Category' };
+  };
+
+  const currentProduct = getProductImageInfo(itemDescription);
 
   const handlePresetSelect = (preset: typeof presets[0]) => {
     setSelectedScenario(preset.id);
@@ -59,7 +73,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({
       {/* Preset Pills */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.35rem', flexWrap: 'wrap' }}>
         <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em', marginRight: '0.2rem' }}>
-          Presets:
+          Demo Categories:
         </span>
         {presets.map((p) => (
           <button
@@ -93,9 +107,51 @@ export const OrderForm: React.FC<OrderFormProps> = ({
         </div>
       )}
 
-      {/* Form Controls */}
+      {/* Form Controls with Product Image Thumbnail */}
       <form onSubmit={handleSubmit}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 220px', gap: '1rem', marginBottom: '1.25rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr 200px', gap: '1rem', marginBottom: '1.25rem', alignItems: 'center' }}>
+          {/* Dynamic Product Image Card */}
+          <div style={{
+            position: 'relative',
+            width: 120,
+            height: 120,
+            borderRadius: 'var(--radius-md)',
+            background: 'var(--bg-recessed)',
+            border: '1px solid var(--border-default)',
+            overflow: 'hidden',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 0 15px rgba(131, 110, 249, 0.15)',
+          }}>
+            <Image
+              src={currentProduct.src}
+              alt={currentProduct.title}
+              fill
+              sizes="120px"
+              style={{ objectFit: 'cover' }}
+              priority
+            />
+            <div style={{
+              position: 'absolute',
+              bottom: 0,
+              inset: 'auto 0 0 0',
+              background: 'rgba(6, 7, 10, 0.75)',
+              backdropFilter: 'blur(4px)',
+              padding: '0.2rem 0.4rem',
+              fontSize: '0.62rem',
+              fontWeight: 700,
+              color: '#a594fd',
+              textAlign: 'center',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+              overflow: 'hidden',
+            }}>
+              {currentProduct.title}
+            </div>
+          </div>
+
+          {/* Product Input */}
           <div className="form-group">
             <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text-secondary)' }}>
               <ShoppingCart size={14} color="var(--primary)" /> Product Description
@@ -105,11 +161,16 @@ export const OrderForm: React.FC<OrderFormProps> = ({
               className="form-input"
               value={itemDescription}
               onChange={(e) => { setItemDescription(e.target.value); if (errorMsg) setErrorMsg(null); }}
-              placeholder="e.g. Mechanical gaming keyboard"
+              placeholder="e.g. Gaming headset, Mechanical keyboard, or Wireless mouse"
               disabled={isLoading}
             />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+              <Tag size={12} color="var(--primary)" />
+              Detected category: <strong style={{ color: 'var(--primary)' }}>{currentProduct.badge}</strong>
+            </div>
           </div>
 
+          {/* Budget Input */}
           <div className="form-group">
             <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text-secondary)' }}>
               <DollarSign size={14} color="var(--primary)" /> Max Budget (USDC)
